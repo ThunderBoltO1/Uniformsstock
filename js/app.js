@@ -1,15 +1,17 @@
-const API_ENABLED = true;// เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
-const API_BASE = "https://uniforms-stock-ram2-hosp.netlify.app";
+// API Configuration
+const API_ENABLED = true; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
+const API_BASE = window.location.origin; // ใช้ origin ปัจจุบันเพื่อรองรับทั้ง local และ production
+
+// ตรวจสอบว่าอยู่ในโหมด development หรือไม่
+const IS_DEVELOPMENT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// ตั้งค่า endpoints
 const SHEETS_ENDPOINT = {
   products: `${API_BASE}/.netlify/functions/products`,
   orders: `${API_BASE}/.netlify/functions/orders`,
 };
 
-const API_STATUS = {
-  products: "enabled",
-  orders: "enabled",
-};
-
+// ตั้งค่า Google Sheets
 const GOOGLE_SHEETS = {
   products: {
     sheetId: "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
@@ -23,12 +25,153 @@ const GOOGLE_SHEETS = {
   },
 };
 
+// ตรวจสอบ API status
+const API_STATUS = {
+  products: "enabled",
+  orders: "enabled",
+};
+
+// ฟังก์ชันสำหรับเรียก API
+async function fetchData(endpoint, options = {}) {
+  try {
+    const response = await fetch(endpoint, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || 'เกิดข้อผิดพลาดในการโหลดข้อมูล');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+}
+
 const state = {
   products: [],
   orders: [],
   editingProduct: null,
   editingOrder: null,
+  isLoading: false,
+  error: null
 };
+
+// ฟังก์ชันโหลดสินค้าทั้งหมด
+async function loadProducts() {
+  if (!API_ENABLED || API_STATUS.products !== 'enabled') {
+    console.warn('Products API is disabled');
+    return [];
+  }
+
+  state.isLoading = true;
+  state.error = null;
+  
+  try {
+    const products = await fetchData(SHEETS_ENDPOINT.products);
+    state.products = products.map(product => ({
+      ...product,
+      price: Number(product.price) || 0,
+      stock: Number(product.stock) || 0
+    }));
+    return state.products;
+  } catch (error) {
+    console.error('Failed to load products:', error);
+    state.error = 'ไม่สามารถโหลดข้อมูลสินค้าได้: ' + (error.message || 'เกิดข้อผิดพลาด');
+    throw error;
+  } finally {
+    state.isLoading = false;
+  }
+}
+
+// ฟังก์ชันบันทึกสินค้า
+async function saveProduct(productData) {
+  if (!API_ENABLED || API_STATUS.products !== 'enabled') {
+    console.warn('Products API is disabled');
+    return { success: false, message: 'Products API is disabled' };
+  }
+
+  state.isLoading = true;
+  state.error = null;
+
+  try {
+    const response = await fetchData(SHEETS_ENDPOINT.products, {
+      method: 'POST',
+      body: JSON.stringify(productData)
+    });
+    
+    // โหลดข้อมูลใหม่หลังจากบันทึก
+    await loadProducts();
+    return response;
+  } catch (error) {
+    console.error('Failed to save product:', error);
+    state.error = 'ไม่สามารถบันทึกข้อมูลสินค้าได้: ' + (error.message || 'เกิดข้อผิดพลาด');
+    throw error;
+  } finally {
+    state.isLoading = false;
+  }
+}
+
+// ฟังก์ชันโหลดคำสั่งซื้อทั้งหมด
+async function loadOrders() {
+  if (!API_ENABLED || API_STATUS.orders !== 'enabled') {
+    console.warn('Orders API is disabled');
+    return [];
+  }
+
+  state.isLoading = true;
+  state.error = null;
+  
+  try {
+    const orders = await fetchData(SHEETS_ENDPOINT.orders);
+    state.orders = orders.map(order => ({
+      ...order,
+      quantity: Number(order.quantity) || 0,
+      total: Number(order.total) || 0
+    }));
+    return state.orders;
+  } catch (error) {
+    console.error('Failed to load orders:', error);
+    state.error = 'ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้: ' + (error.message || 'เกิดข้อผิดพลาด');
+    throw error;
+  } finally {
+    state.isLoading = false;
+  }
+}
+
+// ฟังก์ชันบันทึกคำสั่งซื้อ
+async function saveOrder(orderData) {
+  if (!API_ENABLED || API_STATUS.orders !== 'enabled') {
+    console.warn('Orders API is disabled');
+    return { success: false, message: 'Orders API is disabled' };
+  }
+
+  state.isLoading = true;
+  state.error = null;
+
+  try {
+    const response = await fetchData(SHEETS_ENDPOINT.orders, {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    });
+    
+    // โหลดข้อมูลใหม่หลังจากบันทึก
+    await loadOrders();
+    return response;
+  } catch (error) {
+    console.error('Failed to save order:', error);
+    state.error = 'ไม่สามารถบันทึกข้อมูลคำสั่งซื้อได้: ' + (error.message || 'เกิดข้อผิดพลาด');
+    throw error;
+  } finally {
+    state.isLoading = false;
+  }
+}
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("th-TH", {
