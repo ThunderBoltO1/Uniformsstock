@@ -1,3 +1,4 @@
+const API_ENABLED = false; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
 const API_BASE = "https://uniforms-stock-ram2-hosp.netlify.app";
 const SHEETS_ENDPOINT = {
   products: `${API_BASE}/api/products`,
@@ -5,8 +6,8 @@ const SHEETS_ENDPOINT = {
 };
 
 const API_STATUS = {
-  products: "unknown",
-  orders: "unknown",
+  products: API_ENABLED ? "unknown" : "disabled",
+  orders: API_ENABLED ? "unknown" : "disabled",
 };
 
 const GOOGLE_SHEETS = {
@@ -39,7 +40,7 @@ function formatCurrency(value) {
 
 async function fetchSheetData(kind) {
   const url = SHEETS_ENDPOINT[kind];
-  const shouldUseApi = !url.includes("YOUR-APPSCRIPT-ID") && API_STATUS[kind] !== "disabled";
+  const shouldUseApi = API_ENABLED && API_STATUS[kind] !== "disabled";
   if (shouldUseApi) {
     try {
     const response = await fetch(url);
@@ -57,9 +58,8 @@ async function mutateSheet(kind, payload) {
   const url = SHEETS_ENDPOINT[kind];
   const body = JSON.stringify(payload);
 
-  if (url.includes("YOUR-APPSCRIPT-ID")) {
-    console.info(`[Mock] ${kind} payload`, payload);
-    return { success: true };
+  if (!API_ENABLED || API_STATUS[kind] === "disabled") {
+    throw new Error("ยังไม่ได้เปิดใช้งาน API สำหรับบันทึกข้อมูล");
   }
 
   const response = await fetch(url, {
@@ -266,6 +266,22 @@ async function safeReadJson(response) {
   }
 }
 
+function generateProductId(product) {
+  const prefix = "sku";
+  const category = (product.category || "item").replace(/\W+/g, "").slice(0, 4) || "item";
+  const timestamp = Date.now().toString(36);
+  return `${prefix}-${category}-${timestamp}`;
+}
+
+function generateOrderId() {
+  const date = new Date();
+  const dateStr = date.toISOString().slice(0, 10).replace(/-/g, "");
+  const random = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0");
+  return `ORD-${dateStr}-${random}`;
+}
+
 function mapStatusText(status) {
   return (
     {
@@ -315,6 +331,9 @@ if (productForm) {
   productForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const payload = serializeForm(e.target);
+    if (!payload.id) {
+      payload.id = generateProductId(payload);
+    }
     payload.updatedAt = new Date().toLocaleString("th-TH");
     try {
       await mutateSheet("products", {
@@ -340,6 +359,9 @@ if (orderForm) {
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const payload = serializeForm(e.target);
+    if (!payload.id) {
+      payload.id = generateOrderId();
+    }
     try {
       await mutateSheet("orders", {
         action: state.editingOrder ? "update" : "create",
