@@ -1,6 +1,7 @@
+const API_BASE = "https://uniforms-stock-ram2-hosp.netlify.app";
 const SHEETS_ENDPOINT = {
-  products: "https://script.google.com/macros/s/YOUR-APPSCRIPT-ID/exec?table=products",
-  orders: "https://script.google.com/macros/s/YOUR-APPSCRIPT-ID/exec?table=orders",
+  products: `${API_BASE}/api/products`,
+  orders: `${API_BASE}/api/orders`,
 };
 
 const state = {
@@ -30,32 +31,34 @@ async function fetchSheetData(kind) {
   if (kind === "products") {
     return [
       {
-        name: "เสื้อโปโลพนักงาน",
-        sku: "SKU-001",
-        stock: 120,
-        price: 399,
-        notes: "สีกรม ไซซ์ S-XL",
-        updatedAt: "2025-11-24 10:45",
+        id: "sku-001",
+        name: "เสื้อผู้ชาย",
+        category: "S",
+        stock: 20,
+        price: 500,
+        status: "พร้อมขาย",
       },
       {
-        name: "เสื้อกาวน์",
-        sku: "SKU-018",
-        stock: 35,
-        price: 650,
-        notes: "",
-        updatedAt: "2025-11-24 09:20",
+        id: "sku-007",
+        name: "เสื้อผู้หญิง",
+        category: "S",
+        stock: 18,
+        price: 520,
+        status: "รอผลิต",
       },
     ];
   }
   return [
     {
-      orderId: "ORD-2025-001",
-      customer: "บริษัท ABC จำกัด",
-      product: "เสื้อโปโล 20 ตัว",
-      total: 7999,
-      status: "pending",
+      id: "ORD-2025-001",
+      name: "บริษัท ABC จำกัด",
+      "type-shirt": "เสื้อโปโล",
+      category: "corporate",
       date: "2025-11-24",
-      notes: "",
+      payment: "bank",
+      status: "pending",
+      quantity: 50,
+      total: 7999,
     },
   ];
 }
@@ -84,8 +87,8 @@ function renderTable(tableId, rowTemplateId, rows, mapper) {
 
   table.innerHTML = "";
   if (!rows.length) {
-    table.innerHTML =
-      '<tr><td colspan="6" class="py-8 text-center text-slate-400">ยังไม่มีข้อมูล</td></tr>';
+    const emptyColspan = Number(table.dataset.emptyColspan) || 6;
+    table.innerHTML = `<tr><td colspan="${emptyColspan}" class="py-8 text-center text-slate-400">ยังไม่มีข้อมูล</td></tr>`;
     return;
   }
 
@@ -105,6 +108,12 @@ function renderProducts() {
         el.textContent = formatCurrency(value);
       } else if (key === "stock") {
         el.textContent = `${value} ชิ้น`;
+      } else if (key === "status") {
+        const badge = clone.querySelector("[data-field='status']");
+        if (badge) {
+          badge.textContent = value || "-";
+          badge.className = mapProductStatusColor(value);
+        }
       } else {
         el.textContent = value || "-";
       }
@@ -128,6 +137,8 @@ function renderOrders() {
       if (!el) return;
       if (key === "total") {
         el.textContent = formatCurrency(value);
+      } else if (key === "quantity") {
+        el.textContent = `${value} ชุด`;
       } else if (key === "status") {
         const badge = clone.querySelector("[data-field='status']");
         badge.textContent = mapStatusText(value);
@@ -176,8 +187,27 @@ function mapStatusColor(status) {
       return `${base} bg-emerald-100 text-emerald-700`;
     case "shipped":
       return `${base} bg-sky-100 text-sky-700`;
+    case "in-production":
+      return `${base} bg-indigo-100 text-indigo-700`;
+    case "cancelled":
+      return `${base} bg-rose-100 text-rose-700`;
     default:
       return `${base} bg-amber-100 text-amber-700`;
+  }
+}
+
+function mapProductStatusColor(status) {
+  const base =
+    "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
+  switch (status) {
+    case "พร้อมขาย":
+      return `${base} bg-emerald-100 text-emerald-700`;
+    case "รอผลิต":
+      return `${base} bg-amber-100 text-amber-700`;
+    case "หมดชั่วคราว":
+      return `${base} bg-slate-200 text-slate-600`;
+    default:
+      return `${base} bg-slate-100 text-slate-600`;
   }
 }
 
@@ -185,8 +215,10 @@ function mapStatusText(status) {
   return (
     {
       pending: "รอดำเนินการ",
+      "in-production": "กำลังผลิต",
       paid: "ชำระแล้ว",
       shipped: "ส่งของแล้ว",
+      cancelled: "ยกเลิก",
     }[status] || status
   );
 }

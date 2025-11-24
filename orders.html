@@ -61,37 +61,93 @@
           class="mt-6 grid gap-4 rounded-xl border border-slate-100 bg-slate-50/60 p-4 sm:grid-cols-2"
         >
           <label class="text-sm font-medium text-slate-600">
-            หมายเลขคำสั่งซื้อ
+            รหัสคำสั่งซื้อ (id)
             <input
               type="text"
-              name="orderId"
+              name="id"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
               placeholder="ORD-2025-001"
               required
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            ลูกค้า
+            ชื่อลูกค้า (name)
             <input
               type="text"
-              name="customer"
+              name="name"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
               placeholder="บริษัท ABC จำกัด"
               required
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            รายการสินค้า
+            ประเภทเสื้อ (type-shirt)
             <input
               type="text"
-              name="product"
+              name="type-shirt"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="เสื้อโปโล 20 ตัว"
+              placeholder="เสื้อโปโล / เสื้อยืด / แจ็กเก็ต"
               required
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            ยอดรวม (บาท)
+            หมวดหมู่ (category)
+            <select
+              name="category"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
+            >
+              <option value="corporate">ชุดองค์กร</option>
+              <option value="event">งานอีเวนต์</option>
+              <option value="school">โรงเรียน</option>
+              <option value="other">อื่นๆ</option>
+            </select>
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            วันที่สั่ง (date)
+            <input
+              type="date"
+              name="date"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
+              required
+            />
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            วิธีชำระเงิน (payment)
+            <select
+              name="payment"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
+            >
+              <option value="bank">โอนธนาคาร</option>
+              <option value="cash">เงินสด</option>
+              <option value="credit">บัตรเครดิต</option>
+            </select>
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            สถานะ (status)
+            <select
+              name="status"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
+            >
+              <option value="pending">รอดำเนินการ</option>
+              <option value="in-production">กำลังผลิต</option>
+              <option value="paid">ชำระแล้ว</option>
+              <option value="shipped">ส่งของแล้ว</option>
+              <option value="cancelled">ยกเลิก</option>
+            </select>
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            จำนวน (quantity)
+            <input
+              type="number"
+              min="0"
+              name="quantity"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
+              placeholder="50"
+              required
+            />
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            ยอดรวม (total)
             <input
               type="number"
               min="0"
@@ -100,35 +156,6 @@
               placeholder="7999"
               required
             />
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            สถานะ
-            <select
-              name="status"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-            >
-              <option value="pending">รอดำเนินการ</option>
-              <option value="paid">ชำระแล้ว</option>
-              <option value="shipped">ส่งของแล้ว</option>
-            </select>
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            วันที่
-            <input
-              type="date"
-              name="date"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              required
-            />
-          </label>
-          <label class="text-sm font-medium text-slate-600 sm:col-span-2">
-            หมายเหตุ
-            <textarea
-              name="notes"
-              rows="2"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="รายละเอียดเพิ่มเติม เช่น เงื่อนไขการส่ง"
-            ></textarea>
           </label>
           <div class="sm:col-span-2">
             <button
@@ -158,19 +185,27 @@
         </div>
         <div class="mt-4 overflow-x-auto">
           <table class="min-w-full text-left text-sm text-slate-700">
-            <thead class="text-xs font-semibold uppercase tracking-wide">
-              <tr class="text-slate-500">
-                <th class="py-3 pr-4">คำสั่งซื้อ</th>
+            <thead class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <tr>
+                <th class="py-3 pr-4">รหัส</th>
                 <th class="py-3 pr-4">ลูกค้า</th>
-                <th class="py-3 pr-4">ยอดรวม</th>
+                <th class="py-3 pr-4">ประเภทเสื้อ</th>
+                <th class="py-3 pr-4">หมวดหมู่</th>
+                <th class="py-3 pr-4">ชำระเงิน</th>
                 <th class="py-3 pr-4">สถานะ</th>
+                <th class="py-3 pr-4 text-right">จำนวน</th>
+                <th class="py-3 pr-4 text-right">ยอดรวม</th>
                 <th class="py-3 pr-4">วันที่</th>
                 <th class="py-3 pr-4 text-right">จัดการ</th>
               </tr>
             </thead>
-            <tbody id="orders-table" class="divide-y divide-slate-100">
+            <tbody
+              id="orders-table"
+              class="divide-y divide-slate-100"
+              data-empty-colspan="10"
+            >
               <tr>
-                <td colspan="6" class="py-8 text-center text-slate-400">
+                <td colspan="10" class="py-8 text-center text-slate-400">
                   โหลดข้อมูล...
                 </td>
               </tr>
@@ -182,15 +217,19 @@
 
     <template id="order-row">
       <tr>
-        <td class="py-4 pr-4 font-semibold text-slate-800" data-field="orderId"></td>
-        <td class="py-4 pr-4" data-field="customer"></td>
-        <td class="py-4 pr-4 font-semibold text-slate-800" data-field="total"></td>
+        <td class="py-4 pr-4 font-semibold text-slate-800" data-field="id"></td>
+        <td class="py-4 pr-4" data-field="name"></td>
+        <td class="py-4 pr-4 text-slate-600" data-field="type-shirt"></td>
+        <td class="py-4 pr-4 text-slate-600" data-field="category"></td>
+        <td class="py-4 pr-4 text-slate-600" data-field="payment"></td>
         <td class="py-4 pr-4">
           <span
             data-field="status"
             class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
           ></span>
         </td>
+        <td class="py-4 pr-4 text-right font-semibold text-slate-800" data-field="quantity"></td>
+        <td class="py-4 pr-4 text-right font-semibold text-slate-800" data-field="total"></td>
         <td class="py-4 pr-4 text-sm text-slate-500" data-field="date"></td>
         <td class="py-4 text-right">
           <button

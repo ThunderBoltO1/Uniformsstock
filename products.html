@@ -59,7 +59,17 @@
           class="mt-6 grid gap-4 rounded-xl border border-slate-100 bg-slate-50/60 p-4 sm:grid-cols-2"
         >
           <label class="text-sm font-medium text-slate-600">
-            ชื่อสินค้า
+            รหัสสินค้า (id)
+            <input
+              type="text"
+              name="id"
+              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
+              placeholder="sku-001"
+              required
+            />
+          </label>
+          <label class="text-sm font-medium text-slate-600">
+            ชื่อสินค้า (name)
             <input
               type="text"
               name="name"
@@ -69,45 +79,52 @@
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            รหัสสินค้า
-            <input
-              type="text"
-              name="sku"
+            หมวดหมู่ (category)
+            <select
+              name="category"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-              placeholder="SKU-001"
-              required
-            />
+            >
+              <option value="S">ไซซ์ S</option>
+              <option value="M">ไซซ์ M</option>
+              <option value="L">ไซซ์ L</option>
+              <option value="XL">ไซซ์ XL</option>
+              <option value="2XL">ไซซ์ 2XL</option>
+              <option value="3XL">ไซซ์ 3XL</option>
+              <option value="other">อื่นๆ</option>
+            </select>
           </label>
           <label class="text-sm font-medium text-slate-600">
-            คงเหลือ (ชิ้น)
+            คงเหลือ (stock)
             <input
               type="number"
               min="0"
               name="stock"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-              placeholder="100"
+              placeholder="20"
               required
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            ราคาขาย (บาท)
+            ราคาขาย (price)
             <input
               type="number"
               min="0"
               name="price"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-              placeholder="399"
+              placeholder="500"
               required
             />
           </label>
-          <label class="text-sm font-medium text-slate-600 sm:col-span-2">
-            หมายเหตุ
-            <textarea
-              name="notes"
-              rows="2"
+          <label class="text-sm font-medium text-slate-600">
+            สถานะ (status)
+            <select
+              name="status"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-              placeholder="รายละเอียดเพิ่มเติม เช่น สี/ไซซ์"
-            ></textarea>
+            >
+              <option value="พร้อมขาย">พร้อมขาย</option>
+              <option value="รอผลิต">รอผลิต</option>
+              <option value="หมดชั่วคราว">หมดชั่วคราว</option>
+            </select>
           </label>
           <div class="sm:col-span-2">
             <button
@@ -139,19 +156,24 @@
         </div>
         <div class="mt-4 overflow-x-auto">
           <table class="min-w-full text-left text-sm text-slate-700">
-            <thead class="text-xs font-semibold uppercase tracking-wide">
-              <tr class="text-slate-500">
-                <th class="py-3 pr-4">สินค้า</th>
+            <thead class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <tr>
                 <th class="py-3 pr-4">รหัส</th>
-                <th class="py-3 pr-4">คงเหลือ</th>
-                <th class="py-3 pr-4">ราคา</th>
-                <th class="py-3 pr-4">อัปเดตล่าสุด</th>
+                <th class="py-3 pr-4">ชื่อสินค้า</th>
+                <th class="py-3 pr-4">หมวดหมู่</th>
+                <th class="py-3 pr-4 text-right">คงเหลือ</th>
+                <th class="py-3 pr-4 text-right">ราคา</th>
+                <th class="py-3 pr-4">สถานะ</th>
                 <th class="py-3 pr-4 text-right">แก้ไข</th>
               </tr>
             </thead>
-            <tbody id="products-table" class="divide-y divide-slate-100">
+            <tbody
+              id="products-table"
+              class="divide-y divide-slate-100"
+              data-empty-colspan="7"
+            >
               <tr>
-                <td colspan="6" class="py-8 text-center text-slate-400">
+                <td colspan="7" class="py-8 text-center text-slate-400">
                   โหลดข้อมูล...
                 </td>
               </tr>
@@ -163,14 +185,17 @@
 
     <template id="product-row">
       <tr>
+        <td class="py-4 pr-4 font-mono text-sm text-slate-500" data-field="id"></td>
+        <td class="py-4 pr-4 font-medium text-slate-800" data-field="name"></td>
+        <td class="py-4 pr-4 text-slate-600" data-field="category"></td>
+        <td class="py-4 pr-4 text-right font-semibold text-slate-700" data-field="stock"></td>
+        <td class="py-4 pr-4 text-right font-semibold text-emerald-600" data-field="price"></td>
         <td class="py-4 pr-4">
-          <p class="font-medium text-slate-800" data-field="name"></p>
-          <p class="text-xs text-slate-400" data-field="notes"></p>
+          <span
+            data-field="status"
+            class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+          ></span>
         </td>
-        <td class="py-4 pr-4 font-mono text-sm text-slate-500" data-field="sku"></td>
-        <td class="py-4 pr-4 font-semibold text-slate-700" data-field="stock"></td>
-        <td class="py-4 pr-4 font-semibold text-emerald-600" data-field="price"></td>
-        <td class="py-4 pr-4 text-sm text-slate-500" data-field="updatedAt"></td>
         <td class="py-4 text-right">
           <button
             class="edit-product rounded-md border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-500 hover:border-indigo-200 hover:text-indigo-600"

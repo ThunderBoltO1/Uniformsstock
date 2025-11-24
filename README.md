@@ -13,7 +13,7 @@
 
 ## การเชื่อม Google Sheets
 
-1. สร้าง Google Sheet ที่มีแท็บ `products` และ `orders` (หรือชื่ออื่นตามต้องการ) โดยให้แถวแรกเป็นชื่อคอลัมน์ เช่น `name,sku,stock,price...`
+1. สร้าง Google Sheet ที่มีแท็บ `products` และ `orders` (หรือชื่ออื่นตามต้องการ) โดยให้แถวแรกเป็นชื่อคอลัมน์ เช่น `products`: `id,name,category,stock,price,status` และ `orders`: `id,name,type-shirt,category,date,payment,status,quantity,total` ตามตัวอย่างที่คุณให้มา
 2. ไปที่ **Extensions → Apps Script** แล้วแทนที่สคริปต์ด้วยตัวอย่างด้านล่าง:
 
 ```javascript
@@ -38,7 +38,13 @@ function doPost(e) {
 > เพิ่มฟังก์ชัน `getSheetData` และ `writeSheetData` ให้แปลงข้อมูลจาก/ไปยังแผ่นงานตาม schema ที่ต้องการ
 
 3. Deploy เป็น **Web App** (เลือก `Execute as: Me` และ `Accessible by: Anyone with the link`)
-4. นำ URL ที่ได้ไปแทนที่ `YOUR-APPSCRIPT-ID` ใน `js/app.js`
+# หากโฮสต์ API ผ่าน Nestify / Netlify
+
+- โปรเจ็กต์ถูกตั้งค่าให้ชี้ไปยัง `https://uniforms-stock-ram2-hosp.netlify.app/api/*` แล้ว (ดูที่ `API_BASE` ใน `js/app.js`)
+- ด้านเซิร์ฟเวอร์ (Nestify) ควรจัดการ OAuth กับ Google Sheets และให้ endpoint `/api/products` และ `/api/orders` คืน/บันทึกข้อมูลตาม schema ข้างบน
+- หากต้องการเปลี่ยนโดเมน ให้แก้เพียงค่าคงที่ `API_BASE` แล้ว build/static deploy ได้เลย
+
+4. (สำหรับผู้ใช้ Apps Script) นำ URL ที่ได้ไปแทนที่ `YOUR-APPSCRIPT-ID` ใน `js/app.js`
 
 ```js
 const SHEETS_ENDPOINT = {
@@ -55,7 +61,6 @@ const SHEETS_ENDPOINT = {
 
 ## การปรับแต่ง
 
-- ปรับฟิลด์ในฟอร์มให้ตรงกับคอลัมน์ Google Sheets หรือเพิ่มการตรวจสอบข้อมูลใน `app.js`
+- ปรับฟิลด์ในฟอร์มให้ตรงกับคอลัมน์ Google Sheets หรือเพิ่มการตรวจสอบข้อมูลใน `app.js` (ดีฟอลต์ฝั่งสินค้าใช้ `id,name,category,stock,price,status` และฝั่งคำสั่งซื้อใช้ `id,name,type-shirt,category,date,payment,status,quantity,total`)
 - หากต้องการระบบล็อกอิน/สิทธิ์ สามารถนำหน้า HTML นี้ไปต่อยอดกับบริการ auth ภายนอก หรือย้ายไปใช้เฟรมเวิร์กเต็มรูปแบบในอนาคต
 
-# Uniformsstock
