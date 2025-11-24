@@ -213,10 +213,6 @@ async function mutateSheet(kind, payload) {
     if (!API_ENABLED) {
       throw new Error("ระบบ API ยังไม่ได้เปิดใช้งาน");
     }
-    
-    if (API_STATUS[kind] !== 'enabled') {
-      throw new Error(`ระบบ${kind === 'orders' ? 'บันทึกคำสั่งซื้อ' : 'บันทึกสินค้า'} ปิดปรับปรุงชั่วคราว`);
-    }
 
     if (!url) {
       throw new Error(`ไม่พบ URL สำหรับ ${kind}`);
@@ -377,7 +373,7 @@ async function fetchGoogleSheet(kind) {
   const response = await fetch(csvUrl, { cache: "no-store" });
   if (!response.ok) throw new Error(`โหลดข้อมูล ${kind} จาก Google Sheets ไม่สำเร็จ`);
   const csv = await response.text();
-  return parseCsv(csv, meta);
+  return parseCsv(csv, meta.numericFields || []);
 }
 
 function parseCsv(csv, numericFields = []) {
