@@ -1,6 +1,10 @@
 const { parseCsv } = require("../netlify/functions/utils");
 
-const { SHEET_ID, ORDERS_GID, ORDERS_WEBHOOK_URL } = process.env;
+const {
+  SHEET_ID = "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
+  ORDERS_GID = "1366868069",
+  ORDERS_WEBHOOK_URL,
+} = process.env;
 
 module.exports = async (req, res) => {
   const method = req.method;
@@ -13,11 +17,6 @@ module.exports = async (req, res) => {
   }
 
   if (method === "GET") {
-    if (!SHEET_ID || !ORDERS_GID) {
-      return res.status(501).json({
-        error: "ยังไม่ได้ตั้งค่า Google Sheet ID สำหรับการโหลดข้อมูลคำสั่งซื้อ",
-      });
-    }
     try {
       const records = await fetchOrders();
       return res.status(200).json(records);
