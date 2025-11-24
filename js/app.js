@@ -1,4 +1,4 @@
-const API_ENABLED = false; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
+const API_ENABLED = true; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
 const API_BASE = "https://uniforms-stock-ram2-hosp.netlify.app";
 const SHEETS_ENDPOINT = {
   products: `${API_BASE}/api/products`,
