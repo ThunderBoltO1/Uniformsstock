@@ -1,13 +1,13 @@
-const API_ENABLED = true; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
+const API_ENABLED = true;// เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
 const API_BASE = "https://uniforms-stock-ram2-hosp.netlify.app";
 const SHEETS_ENDPOINT = {
-  products: `${API_BASE}/api/products`,
-  orders: `${API_BASE}/api/orders`,
+  products: `${API_BASE}/.netlify/functions/products`,
+  orders: `${API_BASE}/.netlify/functions/orders`,
 };
 
 const API_STATUS = {
-  products: API_ENABLED ? "unknown" : "disabled",
-  orders: API_ENABLED ? "unknown" : "disabled",
+  products: "enabled",
+  orders: "enabled",
 };
 
 const GOOGLE_SHEETS = {
@@ -40,7 +40,7 @@ function formatCurrency(value) {
 
 async function fetchSheetData(kind) {
   const url = SHEETS_ENDPOINT[kind];
-  const shouldUseApi = API_ENABLED && API_STATUS[kind] !== "disabled";
+  const shouldUseApi = API_STATUS[kind] !== "disabled";
   if (shouldUseApi) {
     try {
     const response = await fetch(url);
