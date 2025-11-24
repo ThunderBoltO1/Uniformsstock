@@ -1,5 +1,5 @@
 // API Configuration
-const API_ENABLED = true; // เปลี่ยนเป็น true เมื่อ endpoint พร้อมใช้งาน
+const API_ENABLED = true; // เปิดใช้งาน API
 const API_BASE = window.location.origin; // ใช้ origin ปัจจุบันเพื่อรองรับทั้ง local และ production
 
 // ตรวจสอบว่าอยู่ในโหมด development หรือไม่
@@ -25,10 +25,19 @@ const GOOGLE_SHEETS = {
   },
 };
 
-// ตรวจสอบ API status
+// ตั้งค่า API Status
 const API_STATUS = {
   products: "enabled",
-  orders: "enabled",
+  orders: "enabled"
+};
+
+// ตั้งค่า CORS สำหรับการเรียก API
+const API_CONFIG = {
+  credentials: 'same-origin',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
 };
 
 // ฟังก์ชันสำหรับเรียก API
@@ -198,23 +207,37 @@ async function fetchSheetData(kind) {
 }
 
 async function mutateSheet(kind, payload) {
-  const url = SHEETS_ENDPOINT[kind];
-  const body = JSON.stringify(payload);
+  try {
+    const url = SHEETS_ENDPOINT[kind];
+    
+    if (!API_ENABLED) {
+      throw new Error("ระบบ API ยังไม่ได้เปิดใช้งาน");
+    }
+    
+    if (API_STATUS[kind] !== 'enabled') {
+      throw new Error(`ระบบ${kind === 'orders' ? 'บันทึกคำสั่งซื้อ' : 'บันทึกสินค้า'} ปิดปรับปรุงชั่วคราว`);
+    }
 
-  if (!API_ENABLED || API_STATUS[kind] === "disabled") {
-    throw new Error("ยังไม่ได้เปิดใช้งาน API สำหรับบันทึกข้อมูล");
-  }
+    if (!url) {
+      throw new Error(`ไม่พบ URL สำหรับ ${kind}`);
+    }
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-  });
-  if (!response.ok) {
-    const message = await safeReadJson(response);
-    throw new Error(message?.error || "บันทึกข้อมูลไม่สำเร็จ");
+    const response = await fetch(url, {
+      method: 'POST',
+      ...API_CONFIG,
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errorData = await safeReadJson(response);
+      throw new Error(errorData?.error || `เกิดข้อผิดพลาดในการบันทึกข้อมูล ${kind}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error in mutateSheet (${kind}):`, error);
+    throw error; // Re-throw the error to be handled by the caller
   }
-  return response.json();
 }
 
 function renderTable(tableId, rowTemplateId, rows, mapper) {
