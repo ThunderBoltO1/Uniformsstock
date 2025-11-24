@@ -4,6 +4,24 @@ const SHEETS_ENDPOINT = {
   orders: `${API_BASE}/api/orders`,
 };
 
+const API_STATUS = {
+  products: "unknown",
+  orders: "unknown",
+};
+
+const GOOGLE_SHEETS = {
+  products: {
+    sheetId: "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
+    gid: "23685886",
+    numericFields: ["stock", "price"],
+  },
+  orders: {
+    sheetId: "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
+    gid: "1366868069",
+    numericFields: ["quantity", "total"],
+  },
+};
+
 const state = {
   products: [],
   orders: [],
@@ -21,64 +39,39 @@ function formatCurrency(value) {
 
 async function fetchSheetData(kind) {
   const url = SHEETS_ENDPOINT[kind];
-  if (!url.includes("YOUR-APPSCRIPT-ID")) {
+  const shouldUseApi = !url.includes("YOUR-APPSCRIPT-ID") && API_STATUS[kind] !== "disabled";
+  if (shouldUseApi) {
+    try {
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`โหลดข้อมูล ${kind} ไม่สำเร็จ`);
+    if (!response.ok) throw new Error(`API ${kind} status ${response.status}`);
     return response.json();
+    } catch (err) {
+      API_STATUS[kind] = "disabled";
+      console.warn(`API ${kind} unavailable, fallback to Google Sheets`, err);
+    }
   }
-
-  // Mock data for local preview before hooking Google Sheets
-  if (kind === "products") {
-    return [
-      {
-        id: "sku-001",
-        name: "เสื้อผู้ชาย",
-        category: "S",
-        stock: 20,
-        price: 500,
-        status: "พร้อมขาย",
-      },
-      {
-        id: "sku-007",
-        name: "เสื้อผู้หญิง",
-        category: "S",
-        stock: 18,
-        price: 520,
-        status: "รอผลิต",
-      },
-    ];
-  }
-  return [
-    {
-      id: "ORD-2025-001",
-      name: "บริษัท ABC จำกัด",
-      "type-shirt": "เสื้อโปโล",
-      category: "corporate",
-      date: "2025-11-24",
-      payment: "bank",
-      status: "pending",
-      quantity: 50,
-      total: 7999,
-    },
-  ];
+  return fetchGoogleSheet(kind);
 }
 
 async function mutateSheet(kind, payload) {
   const url = SHEETS_ENDPOINT[kind];
   const body = JSON.stringify(payload);
 
-  if (!url.includes("YOUR-APPSCRIPT-ID")) {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    });
-    if (!response.ok) throw new Error("บันทึกข้อมูลไม่สำเร็จ");
-    return response.json();
+  if (url.includes("YOUR-APPSCRIPT-ID")) {
+    console.info(`[Mock] ${kind} payload`, payload);
+    return { success: true };
   }
 
-  console.info(`[Mock] ${kind} payload`, payload);
-  return { success: true };
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+  });
+  if (!response.ok) {
+    const message = await safeReadJson(response);
+    throw new Error(message?.error || "บันทึกข้อมูลไม่สำเร็จ");
+  }
+  return response.json();
 }
 
 function renderTable(tableId, rowTemplateId, rows, mapper) {
@@ -208,6 +201,68 @@ function mapProductStatusColor(status) {
       return `${base} bg-slate-200 text-slate-600`;
     default:
       return `${base} bg-slate-100 text-slate-600`;
+  }
+}
+
+async function fetchGoogleSheet(kind) {
+  const meta = GOOGLE_SHEETS[kind];
+  if (!meta) throw new Error(`ไม่พบ Google Sheet สำหรับ ${kind}`);
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${meta.sheetId}/export?format=csv&gid=${meta.gid}`;
+  const response = await fetch(csvUrl, { cache: "no-store" });
+  if (!response.ok) throw new Error(`โหลดข้อมูล ${kind} จาก Google Sheets ไม่สำเร็จ`);
+  const csv = await response.text();
+  return parseCsv(csv, meta);
+}
+
+function parseCsv(csv, meta) {
+  const lines = csv.trim().split(/\r?\n/).filter(Boolean);
+  if (!lines.length) return [];
+  const headers = parseCsvLine(lines.shift()).map((header) => header.trim());
+
+  return lines
+    .map((line) => parseCsvLine(line))
+    .filter((cells) => cells.some((cell) => cell.trim().length))
+    .map((cells) => {
+      return headers.reduce((record, header, idx) => {
+        if (!header) return record;
+        let value = (cells[idx] ?? "").trim();
+        if (meta.numericFields?.includes(header)) {
+          const numeric = Number(value.replace(/,/g, ""));
+          value = Number.isNaN(numeric) ? 0 : numeric;
+        }
+        record[header] = value;
+        return record;
+      }, {});
+    });
+}
+
+function parseCsvLine(line) {
+  const result = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    if (char === '"' && line[i + 1] === '"') {
+      current += '"';
+      i += 1;
+    } else if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === "," && !inQuotes) {
+      result.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+async function safeReadJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
   }
 }
 

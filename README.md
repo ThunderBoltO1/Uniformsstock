@@ -13,7 +13,7 @@
 
 ## การเชื่อม Google Sheets
 
-1. สร้าง Google Sheet ที่มีแท็บ `products` และ `orders` (หรือชื่ออื่นตามต้องการ) โดยให้แถวแรกเป็นชื่อคอลัมน์ เช่น `products`: `id,name,category,stock,price,status` และ `orders`: `id,name,type-shirt,category,date,payment,status,quantity,total` ตามตัวอย่างที่คุณให้มา
+1. สร้าง Google Sheet ที่มีแท็บ `products` และ `orders` (หรือชื่ออื่นตามต้องการ) โดยให้แถวแรกเป็นชื่อคอลัมน์ เช่น `products`: `id,name,category,stock,price,status` และ `orders`: `id,name,type-shirt,category,date,payment,status,quantity,total` ตามตัวอย่างที่คุณให้มา (ตัวแอป fallback ไปอ่านข้อมูลผ่าน CSV export ของ Google Sheets โดยตรงถ้า API ไม่พร้อม)
 2. ไปที่ **Extensions → Apps Script** แล้วแทนที่สคริปต์ด้วยตัวอย่างด้านล่าง:
 
 ```javascript
