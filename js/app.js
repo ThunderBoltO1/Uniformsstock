@@ -380,11 +380,12 @@ async function fetchGoogleSheet(kind) {
   return parseCsv(csv, meta);
 }
 
-function parseCsv(csv, meta) {
+function parseCsv(csv, numericFields = []) {
   const lines = csv.trim().split(/\r?\n/).filter(Boolean);
   if (!lines.length) return [];
-  const headers = parseCsvLine(lines.shift()).map((header) => header.trim());
-
+  
+  const headers = parseCsvLine(lines.shift()).map((h) => h.trim());
+  
   return lines
     .map((line) => parseCsvLine(line))
     .filter((cells) => cells.some((cell) => cell.trim().length))
@@ -392,7 +393,7 @@ function parseCsv(csv, meta) {
       return headers.reduce((record, header, idx) => {
         if (!header) return record;
         let value = (cells[idx] ?? "").trim();
-        if (meta.numericFields?.includes(header)) {
+        if (numericFields.includes(header)) {
           const numeric = Number(value.replace(/,/g, ""));
           value = Number.isNaN(numeric) ? 0 : numeric;
         }
