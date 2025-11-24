@@ -7,8 +7,8 @@ const IS_DEVELOPMENT = window.location.hostname === 'localhost' || window.locati
 
 // ตั้งค่า endpoints
 const SHEETS_ENDPOINT = {
-  products: `${API_BASE}/.netlify/functions/products`,
-  orders: `${API_BASE}/.netlify/functions/orders`,
+  products: `${API_BASE}/api/products`,
+  orders: `${API_BASE}/api/orders`,
 };
 
 // ตั้งค่า Google Sheets
