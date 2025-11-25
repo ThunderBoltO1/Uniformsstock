@@ -279,7 +279,7 @@ function renderProducts() {
       editBtn.addEventListener("click", () => {
         state.editingProduct = row;
         fillForm("product-form", row);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        openProductModal();
       });
     }
   });
@@ -489,6 +489,49 @@ const productForm = document.getElementById("product-form");
 const orderForm = document.getElementById("order-form");
 const refreshProductsBtn = document.getElementById("refresh-products");
 const refreshOrdersBtn = document.getElementById("refresh-orders");
+const productModal = document.getElementById("product-modal");
+const openProductModalBtn = document.getElementById("open-product-modal");
+const closeProductModalBtn = document.getElementById("close-product-modal");
+const cancelProductModalBtn = document.getElementById("cancel-product-modal");
+
+function openProductModal(isEdit = false) {
+  if (!productModal) return;
+  productModal.classList.remove("hidden");
+}
+
+function closeProductModal() {
+  if (!productModal || !productForm) return;
+  productModal.classList.add("hidden");
+  productForm.reset();
+  state.editingProduct = null;
+}
+
+if (refreshProductsBtn) {
+  refreshProductsBtn.addEventListener("click", handleProductsReload);
+  handleProductsReload();
+}
+
+if (openProductModalBtn) {
+  openProductModalBtn.addEventListener("click", () => {
+    state.editingProduct = null;
+    if (productForm) {
+      productForm.reset();
+    }
+    openProductModal();
+  });
+}
+
+if (closeProductModalBtn) {
+  closeProductModalBtn.addEventListener("click", () => {
+    closeProductModal();
+  });
+}
+
+if (cancelProductModalBtn) {
+  cancelProductModalBtn.addEventListener("click", () => {
+    closeProductModal();
+  });
+}
 
 if (productForm) {
   productForm.addEventListener("submit", async (e) => {
@@ -497,25 +540,20 @@ if (productForm) {
     if (!payload.id) {
       payload.id = generateProductId(payload);
     }
-    payload.updatedAt = new Date().toLocaleString("th-TH");
+
     try {
       await mutateSheet("products", {
         action: state.editingProduct ? "update" : "create",
         payload,
       });
       await handleProductsReload();
-      e.target.reset();
-      state.editingProduct = null;
-      alert("บันทึกข้อมูลสินค้าแล้ว");
+      closeProductModal();
+      alert("บันทึกสินค้าแล้ว");
     } catch (err) {
       console.error(err);
-      alert("บันทึกข้อมูลสินค้าไม่สำเร็จ");
+      alert("บันทึกสินค้าไม่สำเร็จ");
     }
   });
-  if (refreshProductsBtn) {
-    refreshProductsBtn.addEventListener("click", handleProductsReload);
-  }
-  handleProductsReload();
 }
 
 if (orderForm) {

@@ -37,15 +37,18 @@ module.exports = async (req, res) => {
   }
 
   if (method === "POST") {
-    if (!PRODUCTS_WEBHOOK_URL) {
-      return res.status(501).json({
-        error: "ยังไม่ได้ตั้งค่าการเชื่อมต่อสำหรับบันทึกข้อมูล",
-        details: "กรุณาตั้งค่า PRODUCTS_WEBHOOK_URL",
-      });
-    }
-
     try {
       const payload = req.body && Object.keys(req.body).length ? req.body : await readJsonBody(req);
+      
+      // ถ้ายังไม่ได้ตั้งค่า PRODUCTS_WEBHOOK_URL ให้ตอบ success แบบจำลองไปก่อน (เหมือน orders)
+      if (!PRODUCTS_WEBHOOK_URL) {
+        console.warn("PRODUCTS_WEBHOOK_URL is not set. Returning mock success response.");
+        return res.status(200).json({
+          success: true,
+          message: "PRODUCTS_WEBHOOK_URL is not configured. This is a mock success response.",
+          payload,
+        });
+      }
 
       const response = await fetch(PRODUCTS_WEBHOOK_URL, {
         method: "POST",
