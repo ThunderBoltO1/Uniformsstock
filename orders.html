@@ -72,14 +72,16 @@
             />
           </label>
           <label class="text-sm font-medium text-slate-600">
-            ประเภทเสื้อ (type-shirt)
-            <input
-              type="text"
-              name="type-shirt"
+            เลือกสินค้า
+            <select
+              id="order-product-select"
+              name="productId"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="เสื้อโปโล / เสื้อยืด / แจ็กเก็ต"
               required
-            />
+            >
+              <option value="">-- กำลังโหลดรายการสินค้า... --</option>
+              <!-- Options will be populated by JS -->
+            </select>
           </label>
           <label class="text-sm font-medium text-slate-600">
             หมวดหมู่ (category)
@@ -145,6 +147,7 @@
               name="total"
               class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
               placeholder="7999"
+              readonly
               required
             />
           </label>
@@ -233,6 +236,6 @@
     </template>
 
     <script type="module" src="./js/app.js"></script>
+    <script type="module" src="/js/app.js"></script>
   </body>
 </html>
-

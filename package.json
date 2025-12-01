@@ -1,0 +1,27 @@
+{
+  "name": "uniforms-stock",
+  "version": "1.0.0",
+  "description": "แดชบอร์ดจัดการสินค้ากับคำสั่งซื้อสำหรับธุรกิจยูนิฟอร์ม ใช้ HTML + Tailwind + JavaScript ฝั่งหน้าบ้าน และรองรับการเชื่อมต่อ Google Sheets ผ่าน Google Apps Script หรือบริการใดๆ ที่ตอบกลับในรูป JSON",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThunderBoltO1/Uniformsstock.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ThunderBoltO1/Uniformsstock/issues"
+  },
+  "homepage": "https://github.com/ThunderBoltO1/Uniformsstock#readme",
+  "dependencies": {
+    "@firebase/app": "^0.14.6",
+    "@firebase/firestore": "^4.9.2",
+    "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0"
+  }
+}

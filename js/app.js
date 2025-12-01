@@ -5,24 +5,10 @@ const API_BASE = window.location.origin; // ใช้ origin ปัจจุบ�
 // ตรวจสอบว่าอยู่ในโหมด development หรือไม่
 const IS_DEVELOPMENT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-// ตั้งค่า endpoints
-const SHEETS_ENDPOINT = {
-  products: `${API_BASE}/api/products`,
-  orders: `${API_BASE}/api/orders`,
-};
-
-// ตั้งค่า Google Sheets
-const GOOGLE_SHEETS = {
-  products: {
-    sheetId: "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
-    gid: "23685886",
-    numericFields: ["stock", "price"],
-  },
-  orders: {
-    sheetId: "1i3XMdNVGD9-MSCi9UKHcDuUXC7oGmLXNI5bvEhsoCaU",
-    gid: "1366868069",
-    numericFields: ["quantity", "total"],
-  },
+// API endpoints for Netlify functions
+const API_ENDPOINTS = {
+  products: `/api/products`,
+  orders: `/api/order`,
 };
 
 // ตั้งค่า API Status
@@ -83,7 +69,7 @@ async function loadProducts() {
   state.error = null;
   
   try {
-    const products = await fetchData(SHEETS_ENDPOINT.products);
+    const products = await fetchData(API_ENDPOINTS.products);
     state.products = products.map(product => ({
       ...product,
       price: Number(product.price) || 0,
@@ -93,34 +79,6 @@ async function loadProducts() {
   } catch (error) {
     console.error('Failed to load products:', error);
     state.error = 'ไม่สามารถโหลดข้อมูลสินค้าได้: ' + (error.message || 'เกิดข้อผิดพลาด');
-    throw error;
-  } finally {
-    state.isLoading = false;
-  }
-}
-
-// ฟังก์ชันบันทึกสินค้า
-async function saveProduct(productData) {
-  if (!API_ENABLED || API_STATUS.products !== 'enabled') {
-    console.warn('Products API is disabled');
-    return { success: false, message: 'Products API is disabled' };
-  }
-
-  state.isLoading = true;
-  state.error = null;
-
-  try {
-    const response = await fetchData(SHEETS_ENDPOINT.products, {
-      method: 'POST',
-      body: JSON.stringify(productData)
-    });
-    
-    // โหลดข้อมูลใหม่หลังจากบันทึก
-    await loadProducts();
-    return response;
-  } catch (error) {
-    console.error('Failed to save product:', error);
-    state.error = 'ไม่สามารถบันทึกข้อมูลสินค้าได้: ' + (error.message || 'เกิดข้อผิดพลาด');
     throw error;
   } finally {
     state.isLoading = false;
@@ -138,7 +96,7 @@ async function loadOrders() {
   state.error = null;
   
   try {
-    const orders = await fetchData(SHEETS_ENDPOINT.orders);
+    const orders = await fetchData(API_ENDPOINTS.orders);
     state.orders = orders.map(order => ({
       ...order,
       quantity: Number(order.quantity) || 0,
@@ -154,86 +112,12 @@ async function loadOrders() {
   }
 }
 
-// ฟังก์ชันบันทึกคำสั่งซื้อ
-async function saveOrder(orderData) {
-  if (!API_ENABLED || API_STATUS.orders !== 'enabled') {
-    console.warn('Orders API is disabled');
-    return { success: false, message: 'Orders API is disabled' };
-  }
-
-  state.isLoading = true;
-  state.error = null;
-
-  try {
-    const response = await fetchData(SHEETS_ENDPOINT.orders, {
-      method: 'POST',
-      body: JSON.stringify(orderData)
-    });
-    
-    // โหลดข้อมูลใหม่หลังจากบันทึก
-    await loadOrders();
-    return response;
-  } catch (error) {
-    console.error('Failed to save order:', error);
-    state.error = 'ไม่สามารถบันทึกข้อมูลคำสั่งซื้อได้: ' + (error.message || 'เกิดข้อผิดพลาด');
-    throw error;
-  } finally {
-    state.isLoading = false;
-  }
-}
-
 function formatCurrency(value) {
   return new Intl.NumberFormat("th-TH", {
     style: "currency",
     currency: "THB",
     maximumFractionDigits: 0,
   }).format(value);
-}
-
-async function fetchSheetData(kind) {
-  const url = SHEETS_ENDPOINT[kind];
-  const shouldUseApi = API_STATUS[kind] !== "disabled";
-  if (shouldUseApi) {
-    try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`API ${kind} status ${response.status}`);
-    return response.json();
-    } catch (err) {
-      API_STATUS[kind] = "disabled";
-      console.warn(`API ${kind} unavailable, fallback to Google Sheets`, err);
-    }
-  }
-  return fetchGoogleSheet(kind);
-}
-
-async function mutateSheet(kind, payload) {
-  try {
-    const url = SHEETS_ENDPOINT[kind];
-    
-    if (!API_ENABLED) {
-      throw new Error("ระบบ API ยังไม่ได้เปิดใช้งาน");
-    }
-
-    if (!url) {
-      throw new Error(`ไม่พบ URL สำหรับ ${kind}`);
-    }
-
-    const response = await fetch(url, {
-      method: 'POST',
-      ...API_CONFIG,
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const errorData = await safeReadJson(response);
-      throw new Error(errorData?.error || `เกิดข้อผิดพลาดในการบันทึกข้อมูล ${kind}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error(`Error in mutateSheet (${kind}):`, error);
-    throw error; // Re-throw the error to be handled by the caller
-  }
 }
 
 function renderTable(tableId, rowTemplateId, rows, mapper) {
@@ -366,69 +250,6 @@ function mapProductStatusColor(status) {
   }
 }
 
-async function fetchGoogleSheet(kind) {
-  const meta = GOOGLE_SHEETS[kind];
-  if (!meta) throw new Error(`ไม่พบ Google Sheet สำหรับ ${kind}`);
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${meta.sheetId}/export?format=csv&gid=${meta.gid}`;
-  const response = await fetch(csvUrl, { cache: "no-store" });
-  if (!response.ok) throw new Error(`โหลดข้อมูล ${kind} จาก Google Sheets ไม่สำเร็จ`);
-  const csv = await response.text();
-  return parseCsv(csv, meta.numericFields || []);
-}
-
-function parseCsv(csv, numericFields = []) {
-  const lines = csv.trim().split(/\r?\n/).filter(Boolean);
-  if (!lines.length) return [];
-  
-  const headers = parseCsvLine(lines.shift()).map((h) => h.trim());
-  
-  return lines
-    .map((line) => parseCsvLine(line))
-    .filter((cells) => cells.some((cell) => cell.trim().length))
-    .map((cells) => {
-      return headers.reduce((record, header, idx) => {
-        if (!header) return record;
-        let value = (cells[idx] ?? "").trim();
-        if (numericFields.includes(header)) {
-          const numeric = Number(value.replace(/,/g, ""));
-          value = Number.isNaN(numeric) ? 0 : numeric;
-        }
-        record[header] = value;
-        return record;
-      }, {});
-    });
-}
-
-function parseCsvLine(line) {
-  const result = [];
-  let current = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i += 1) {
-    const char = line[i];
-    if (char === '"' && line[i + 1] === '"') {
-      current += '"';
-      i += 1;
-    } else if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      result.push(current);
-      current = "";
-    } else {
-      current += char;
-    }
-  }
-  result.push(current);
-  return result;
-}
-
-async function safeReadJson(response) {
-  try {
-    return await response.json();
-  } catch {
-    return null;
-  }
-}
-
 function generateProductId(product) {
   const prefix = "sku";
   const category = (product.category || "item").replace(/\W+/g, "").slice(0, 4) || "item";
@@ -459,29 +280,29 @@ function mapStatusText(status) {
 
 async function handleProductsReload() {
   const btn = document.getElementById("refresh-products");
-  btn.disabled = true;
+  if (btn) btn.disabled = true;
   try {
-    state.products = await fetchSheetData("products");
+    await loadProducts();
     renderProducts();
   } catch (err) {
-    console.error(err);
+    // Error is already logged by loadProducts
     alert("ไม่สามารถโหลดข้อมูลสินค้าได้");
   } finally {
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
   }
 }
 
 async function handleOrdersReload() {
   const btn = document.getElementById("refresh-orders");
-  btn.disabled = true;
+  if (btn) btn.disabled = true;
   try {
-    state.orders = await fetchSheetData("orders");
+    await loadOrders();
     renderOrders();
   } catch (err) {
-    console.error(err);
+    // Error is already logged by loadOrders
     alert("ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้");
   } finally {
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
   }
 }
 
@@ -541,10 +362,12 @@ if (productForm) {
       payload.id = generateProductId(payload);
     }
 
+    const action = state.editingProduct ? "update" : "create";
+
     try {
-      await mutateSheet("products", {
-        action: state.editingProduct ? "update" : "create",
-        payload,
+      await fetchData(API_ENDPOINTS.products, {
+        method: 'POST',
+        body: JSON.stringify({ action, payload })
       });
       await handleProductsReload();
       closeProductModal();
@@ -563,10 +386,13 @@ if (orderForm) {
     if (!payload.id) {
       payload.id = generateOrderId();
     }
+    
+    const action = state.editingOrder ? "update" : "create";
+
     try {
-      await mutateSheet("orders", {
-        action: state.editingOrder ? "update" : "create",
-        payload,
+      await fetchData(API_ENDPOINTS.orders, {
+        method: 'POST',
+        body: JSON.stringify({ action, payload })
       });
       await handleOrdersReload();
       e.target.reset();
