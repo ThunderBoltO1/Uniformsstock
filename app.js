@@ -7,7 +7,8 @@ import {
   addDoc, 
   doc, 
   updateDoc, 
-  getDoc,
+  getDoc, 
+  deleteDoc,
   runTransaction,
   increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -19,6 +20,7 @@ if (document.getElementById('products-table')) {
   const refreshButton = document.getElementById('refresh-products');
   const productModal = document.getElementById('product-modal');
   const productForm = document.getElementById('product-form');
+  const deleteProductButton = document.getElementById('delete-product-button');
   let editingProductId = null; // To track if we are editing
   
   // --- Orders Page Logic (from previous step) ---
@@ -72,6 +74,7 @@ if (document.getElementById('products-table')) {
         const order = doc.data();
         const orderId = doc.id;
         const row = orderRowTemplate.content.cloneNode(true);
+        row.querySelector('tr').dataset.orderId = orderId;
   
         row.querySelector('[data-field="id"]').textContent = orderId.substring(0, 8);
         row.querySelector('[data-field="name"]').textContent = order.customerName;
@@ -97,7 +100,10 @@ if (document.getElementById('products-table')) {
   
         const editButton = row.querySelector('.edit-order');
         editButton.addEventListener('click', () => handleEditOrder(orderId));
-  
+
+        const deleteButton = row.querySelector('.delete-order');
+        deleteButton.addEventListener('click', () => handleDeleteOrder(orderId, order.productId, order.quantity));
+
         ordersTable.appendChild(row);
       });
     };
@@ -117,11 +123,61 @@ if (document.getElementById('products-table')) {
     const handleEditOrder = async (id) => {
       // Logic for editing an order (from previous step)
     };
+
+    const handleDeleteOrder = async (orderId, productId, quantity) => {
+      if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบคำสั่งซื้อนี้ (${orderId.substring(0, 8)})? การลบจะคืนสต็อกสินค้ากลับเข้าระบบ`)) {
+        return;
+      }
+
+      // Find the button on the row and disable it
+      const rowToDelete = document.querySelector(`[data-order-id="${orderId}"]`);
+      const deleteButton = rowToDelete ? rowToDelete.querySelector('.delete-order') : null;
+      if(deleteButton) {
+        deleteButton.disabled = true;
+        deleteButton.textContent = 'กำลังลบ...';
+      }
+
+      try {
+        // Use a transaction to ensure both operations (delete order, update stock) succeed or fail together.
+        await runTransaction(db, async (transaction) => {
+          const orderRef = doc(db, "orders", orderId);
+          const productRef = doc(db, "products", productId);
+
+          // 1. Restore stock
+          // We check if product exists before incrementing, although it's good practice.
+          // increment() is safe and won't throw an error if the doc doesn't exist, but the update will just fail silently.
+          transaction.update(productRef, { stock: increment(quantity) });
+
+          // 2. Delete the order
+          transaction.delete(orderRef);
+        });
+
+        alert('ลบคำสั่งซื้อและคืนสต็อกเรียบร้อยแล้ว');
+        fetchOrders(); // Refresh the list
+
+      } catch (error) {
+        console.error("Error deleting order and restoring stock: ", error);
+        alert(`เกิดข้อผิดพลาดในการลบคำสั่งซื้อ: ${error.toString()}`);
+        if(deleteButton) deleteButton.disabled = false; // Re-enable button on failure
+      }
+    };
   
     const calculateTotal = () => {
       // Logic for calculating total (from previous step)
     };
   
+    const setInitialFormValues = () => {
+      // Set today's date as the default value for the date input
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+      const day = String(today.getDate()).padStart(2, '0');
+      const todayString = `${year}-${month}-${day}`;
+      
+      const dateInput = orderForm.querySelector('input[name="date"]');
+      if (dateInput) dateInput.value = todayString;
+    };
+
     const populateProductsDropdown = async () => {
       // Logic for populating dropdown (from previous step)
     };
@@ -198,11 +254,18 @@ if (document.getElementById('products-table')) {
     });
   
     // Initial Setup and Event Listeners
+    setInitialFormValues(); // Set default date on page load
     populateProductsDropdown();
     fetchOrders();
     refreshButton.addEventListener('click', fetchOrders);
     productSelect.addEventListener('change', calculateTotal);
     orderForm.quantity.addEventListener('input', calculateTotal);
+
+    // Handle form reset to re-apply default values
+    orderForm.addEventListener('reset', () => {
+      // The browser clears the form first, then we re-apply our defaults.
+      setTimeout(setInitialFormValues, 0);
+    });
   }
 
   // --- End of Orders Page Logic ---
@@ -277,12 +340,14 @@ if (document.getElementById('products-table')) {
     productForm.reset();
     editingProductId = null;
     document.querySelector('#product-modal h2').textContent = 'เพิ่มสินค้า';
+    deleteProductButton.classList.add('hidden');
   };
 
   document.getElementById('open-product-modal')?.addEventListener('click', () => {
     editingProductId = null;
     productForm.reset();
     document.querySelector('#product-modal h2').textContent = 'เพิ่มสินค้า';
+    deleteProductButton.classList.add('hidden');
     openModal();
   });
   document.getElementById('close-product-modal')?.addEventListener('click', closeModal);
@@ -306,6 +371,7 @@ if (document.getElementById('products-table')) {
         productForm.status.value = product.status || 'พร้อมขาย';
 
         document.querySelector('#product-modal h2').textContent = 'แก้ไขสินค้า';
+        deleteProductButton.classList.remove('hidden');
         openModal();
       } else {
         console.log("No such document!");
@@ -316,6 +382,34 @@ if (document.getElementById('products-table')) {
       alert("เกิดข้อผิดพลาดในการดึงข้อมูลเพื่อแก้ไข");
     }
   };
+
+  // Handle deleting a product
+  deleteProductButton.addEventListener('click', async () => {
+    if (!editingProductId) {
+      alert('เกิดข้อผิดพลาด: ไม่พบรหัสสินค้าที่ต้องการลบ');
+      return;
+    }
+
+    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้ (${editingProductId.substring(0,8)})? การกระทำนี้ไม่สามารถย้อนกลับได้`)) {
+      return;
+    }
+
+    deleteProductButton.disabled = true;
+    deleteProductButton.textContent = 'กำลังลบ...';
+
+    try {
+      const productRef = doc(db, "products", editingProductId);
+      await deleteDoc(productRef);
+      alert('ลบสินค้าเรียบร้อยแล้ว');
+      closeModal();
+      fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+      alert('เกิดข้อผิดพลาดในการลบสินค้า');
+      deleteProductButton.disabled = false;
+      deleteProductButton.textContent = 'ลบสินค้า';
+    }
+  });
 
   // Handle form submission for both add and edit
   productForm.addEventListener('submit', async (e) => {

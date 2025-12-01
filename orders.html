@@ -16,6 +16,16 @@
         font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
       }
+      @keyframes row-appear {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900">
@@ -58,103 +68,80 @@
 
         <form
           id="order-form"
-          class="mt-6 grid gap-4 sm:grid-cols-2"
+          class="mt-6 space-y-6"
         >
           <input type="hidden" name="id" />
-          <label class="text-sm font-medium text-slate-600">
-            ชื่อลูกค้า (name)
-            <input
-              type="text"
-              name="name"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="บริษัท ABC จำกัด"
-              required
-            />
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            เลือกสินค้า
-            <select
-              id="order-product-select"
-              name="productId"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              required
+          <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <legend class="sr-only">ข้อมูลลูกค้าและสินค้า</legend>
+            <div>
+              <label for="order-name" class="block text-sm font-medium text-slate-700">ชื่อลูกค้า</label>
+              <input type="text" id="order-name" name="name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" placeholder="บริษัท ABC จำกัด" required />
+            </div>
+            <div>
+              <label for="order-product-select" class="block text-sm font-medium text-slate-700">เลือกสินค้า</label>
+              <select id="order-product-select" name="productId" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" required>
+                <option value="">-- กำลังโหลดรายการสินค้า... --</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <legend class="sr-only">รายละเอียดคำสั่งซื้อ</legend>
+            <div>
+              <label for="order-quantity" class="block text-sm font-medium text-slate-700">จำนวน</label>
+              <input type="number" id="order-quantity" min="1" name="quantity" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" placeholder="50" required />
+            </div>
+            <div>
+              <label for="order-total" class="block text-sm font-medium text-slate-700">ยอดรวม (บาท)</label>
+              <input type="number" id="order-total" min="0" name="total" class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-100 text-slate-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" placeholder="คำนวณอัตโนมัติ" readonly required />
+            </div>
+            <div>
+              <label for="order-category" class="block text-sm font-medium text-slate-700">หมวดหมู่</label>
+              <select id="order-category" name="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <option value="corporate">ชุดองค์กร</option>
+                <option value="event">งานอีเวนต์</option>
+                <option value="school">โรงเรียน</option>
+                <option value="other">อื่นๆ</option>
+              </select>
+            </div>
+            <div>
+              <label for="order-date" class="block text-sm font-medium text-slate-700">วันที่สั่ง</label>
+              <input type="date" id="order-date" name="date" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" required />
+            </div>
+          </fieldset>
+
+          <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <legend class="sr-only">การชำระเงินและสถานะ</legend>
+            <div>
+              <label for="order-payment" class="block text-sm font-medium text-slate-700">วิธีชำระเงิน</label>
+              <select id="order-payment" name="payment" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <option value="bank">โอนธนาคาร</option>
+                <option value="cash">เงินสด</option>
+                <option value="credit">บัตรเครดิต</option>
+              </select>
+            </div>
+            <div>
+              <label for="order-status" class="block text-sm font-medium text-slate-700">สถานะ</label>
+              <select id="order-status" name="status" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <option value="pending">รอดำเนินการ</option>
+                <option value="in-production">กำลังผลิต</option>
+                <option value="paid">ชำระแล้ว</option>
+                <option value="shipped">ส่งของแล้ว</option>
+                <option value="cancelled">ยกเลิก</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <div class="flex items-center justify-end gap-3 border-t border-slate-200 pt-6">
+            <button
+              type="reset"
+              class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
             >
-              <option value="">-- กำลังโหลดรายการสินค้า... --</option>
-              <!-- Options will be populated by JS -->
-            </select>
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            หมวดหมู่ (category)
-            <select
-              name="category"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-            >
-              <option value="corporate">ชุดองค์กร</option>
-              <option value="event">งานอีเวนต์</option>
-              <option value="school">โรงเรียน</option>
-              <option value="other">อื่นๆ</option>
-            </select>
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            วันที่สั่ง (date)
-            <input
-              type="date"
-              name="date"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              required
-            />
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            วิธีชำระเงิน (payment)
-            <select
-              name="payment"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-            >
-              <option value="bank">โอนธนาคาร</option>
-              <option value="cash">เงินสด</option>
-              <option value="credit">บัตรเครดิต</option>
-            </select>
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            สถานะ (status)
-            <select
-              name="status"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-            >
-              <option value="pending">รอดำเนินการ</option>
-              <option value="in-production">กำลังผลิต</option>
-              <option value="paid">ชำระแล้ว</option>
-              <option value="shipped">ส่งของแล้ว</option>
-              <option value="cancelled">ยกเลิก</option>
-            </select>
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            จำนวน (quantity)
-            <input
-              type="number"
-              min="0"
-              name="quantity"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="50"
-              required
-            />
-          </label>
-          <label class="text-sm font-medium text-slate-600">
-            ยอดรวม (total)
-            <input
-              type="number"
-              min="0"
-              name="total"
-              class="mt-1 w-full rounded-lg border-slate-200 bg-slate-200/60 text-base shadow-sm focus:border-emerald-400 focus:ring-emerald-400"
-              placeholder="7999"
-              readonly
-              required
-            />
-          </label>
-          <div class="sm:col-span-2">
+              ล้างฟอร์ม
+            </button>
             <button
               type="submit"
-              class="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 sm:w-auto"
+              class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
             >
               บันทึกคำสั่งซื้อ
             </button>
@@ -163,12 +150,18 @@
       </section>
 
       <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex flex-col gap-4 border-b border-slate-200 pb-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
               ข้อมูลล่าสุด
             </p>
             <h3 class="text-lg font-semibold text-slate-800">สรุปคำสั่งซื้อ</h3>
+          </div>
+          <div class="relative">
+            <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input type="search" id="order-search-input" placeholder="ค้นหาชื่อลูกค้า, สินค้า..." class="w-full rounded-lg border-slate-300 py-2 pl-10 pr-4 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 md:w-64" />
           </div>
           <button
             id="refresh-orders"
@@ -181,15 +174,15 @@
           <table class="min-w-full text-left text-sm text-slate-700">
             <thead class="text-xs font-semibold uppercase tracking-wide text-slate-600">
               <tr>
-                <th class="py-3 pr-4">รหัส</th>
-                <th class="py-3 pr-4">ลูกค้า</th>
-                <th class="py-3 pr-4">ประเภทเสื้อ</th>
-                <th class="py-3 pr-4">หมวดหมู่</th>
-                <th class="py-3 pr-4">ชำระเงิน</th>
-                <th class="py-3 pr-4">สถานะ</th>
-                <th class="py-3 pr-4 text-right">จำนวน</th>
-                <th class="py-3 pr-4 text-right">ยอดรวม</th>
-                <th class="py-3 pr-4">วันที่</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="id">รหัส</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="customerName">ลูกค้า</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="type-shirt">ประเภทเสื้อ</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="category">หมวดหมู่</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="payment">ชำระเงิน</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="status">สถานะ</th>
+                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="quantity">จำนวน</th>
+                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="total">ยอดรวม</th>
+                <th class="py-3 pr-4 cursor-pointer" data-sort="date">วันที่</th>
                 <th class="py-3 pr-4 text-right">จัดการ</th>
               </tr>
             </thead>
@@ -210,7 +203,7 @@
     </main>
 
     <template id="order-row">
-      <tr class="transition-colors hover:bg-slate-50">
+      <tr class="transition-colors hover:bg-slate-50" style="animation: row-appear 0.5s ease-out forwards;">
         <td class="py-4 pr-4 font-mono text-sm text-slate-500" data-field="id"></td>
         <td class="py-4 pr-4 font-medium text-slate-800" data-field="name"></td>
         <td class="py-4 pr-4 text-slate-600" data-field="type-shirt"></td>
@@ -227,9 +220,14 @@
         <td class="py-4 pr-4 text-sm text-slate-500" data-field="date"></td>
         <td class="py-4 text-right">
           <button
-            class="edit-order rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-600"
-          >
+            class="edit-order text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+            >
             แก้ไข
+          </button>
+          <button
+            class="delete-order text-xs font-semibold text-red-600 hover:text-red-700"
+            >
+            ลบ
           </button>
         </td>
       </tr>
