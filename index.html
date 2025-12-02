@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Uniforms Stock</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,11 +16,80 @@
         font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
       }
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
+      <div
+        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
+      >
+        <div>
+          <a
+            href="./index.html"
+            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
+          >
+            Uniforms Stock
+          </a>
+          <h1 class="text-2xl font-semibold">หน้าหลัก</h1>
+        </div>
+        <nav class="flex gap-4">
+          <a
+            href="./dashboard.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >ภาพรวม</a
+          >
+          <a
+            href="./products.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >สินค้า</a
+          >
+          <a
+            data-role="admin user"
+            href="./orders.html"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >คำสั่งซื้อ</a
+          >
+           <a
+            href="./user-management.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >จัดการผู้ใช้</a
+          >
+          <a
+            href="./audit-log.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >ประวัติการแก้ไข</a
+          >
+          <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
+            <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
+                <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
+                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+            </a>
+            <a
+              href="#"
+              title="ออกจากระบบ"
+              class="logout-button rounded-md p-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
     <div class="bg-slate-50">
-      <div class="mx-auto max-w-4xl px-6 py-24 sm:py-32">
+      <div class="mx-auto px-6 py-24 sm:py-32">
         <div class="text-center">
           <p class="text-base font-semibold leading-7 text-indigo-600">
           Uniforms Stock
@@ -33,16 +102,36 @@
       </div>
     </div>
     <main
-      class="relative mx-auto grid max-w-4xl gap-8 px-6 pb-16 -mt-16 sm:grid-cols-2"
+      class="relative mx-auto grid gap-8 px-6 pb-16 -mt-20 sm:grid-cols-2 lg:grid-cols-3"
     >
       <a
+        href="./dashboard.html"
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-sky-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.1s forwards; opacity: 0;"
+      >
+        <div
+          class="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-100 text-sky-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 100 15 7.5 7.5 0 000-15zM21 21l-5.197-5.197" /></svg>
+        </div>
+        <h2 class="mt-6 text-2xl font-semibold text-slate-900">ภาพรวม (Dashboard)</h2>
+        <p class="mt-3 text-base text-slate-500">
+          ดูสรุปยอดขาย, จำนวนคำสั่งซื้อ, และกราฟสรุปผลประกอบการ
+        </p>
+        <span
+          class="mt-6 inline-flex items-center text-sm font-semibold text-sky-600 transition group-hover:translate-x-1"
+        >
+          ไปที่หน้าภาพรวม →
+        </span>
+      </a>
+
+      <a
         href="./products.html"
-        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-xl"
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-indigo-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.2s forwards; opacity: 0;"
       >
         <div
           class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600"
         >
-          <span class="text-2xl">📦</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
         </div>
         <h2 class="mt-6 text-2xl font-semibold text-slate-900">สินค้าคงคลัง</h2>
         <p class="mt-3 text-base text-slate-500">
@@ -57,12 +146,12 @@
 
       <a
         href="./orders.html"
-        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl"
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.3s forwards; opacity: 0;"
       >
         <div
           class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600"
         >
-          <span class="text-2xl">🧾</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75c0-.231-.035-.454-.1-.664M6.75 7.5H18a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25v-9a2.25 2.25 0 012.25-2.25z" /></svg>
         </div>
         <h2 class="mt-6 text-2xl font-semibold text-slate-900">คำสั่งซื้อ</h2>
         <p class="mt-3 text-base text-slate-500">
@@ -75,5 +164,6 @@
         </span>
       </a>
     </main>
+    <script type="module" src="./js/auth.js"></script>
   </body>
 </html>

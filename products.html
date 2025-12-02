@@ -16,6 +16,16 @@
         font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
       }
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
       @keyframes row-appear {
         from {
           opacity: 0;
@@ -31,42 +41,74 @@
   <body class="min-h-screen bg-slate-50 text-slate-900">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
       <div
-        class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4"
+        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
       >
         <div>
           <a
             href="./index.html"
-            class="text-sm font-semibold uppercase tracking-wide text-indigo-600 transition hover:text-indigo-700"
+            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
           >
             Uniforms Stock
           </a>
           <h1 class="text-2xl font-semibold">จัดการสินค้า</h1>
         </div>
-        <nav class="flex gap-4 text-indigo-100">
+        <nav class="flex gap-4">
+          <a
+            href="./dashboard.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >ภาพรวม</a
+          >
           <a
             href="./products.html"
+            data-role="admin"
             class="border-b-2 border-indigo-600 px-2 py-2 text-sm font-semibold text-indigo-600"
             >สินค้า</a
           >
           <a
+            data-role="admin user"
             href="./orders.html"
             class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >คำสั่งซื้อ</a
           >
+           <a
+            href="./user-management.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >จัดการผู้ใช้</a
+          >
+          <a
+            href="./audit-log.html"
+            data-role="admin"
+            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >ประวัติการแก้ไข</a
+          >
+          <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
+            <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
+                <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
+                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+            </a>
+            <a
+              href="#"
+              title="ออกจากระบบ"
+              class="logout-button rounded-md p-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+            </a>
+          </div>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-6 py-8 space-y-8">
+    <main class="px-6 py-8 space-y-8" style="animation: fade-in-up 0.7s ease-out forwards;">
       <section>
-        <div class="flex items-center justify-between">
-          <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
             <p class="text-sm font-medium uppercase tracking-wide text-slate-500">ภาพรวม</p>
             <h2 class="text-3xl font-semibold text-slate-800">รายการสินค้าในระบบ</h2>
           </div>
           <button
             id="open-product-modal"
-            class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            class="w-full sm:w-auto rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             เพิ่มสินค้า
           </button>
@@ -74,52 +116,71 @@
       </section>
 
       <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-        <div class="flex flex-col gap-4 border-b border-slate-200 pb-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
-              ข้อมูลล่าสุด
-            </p>
-            <h3 class="text-lg font-semibold text-slate-800">
-              สรุปรายการสินค้า
-            </h3>
+        <div class="border-b border-slate-200 pb-4 space-y-4">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wide text-slate-500">ข้อมูลล่าสุด</p>
+              <h3 class="text-lg font-semibold text-slate-800">สรุปรายการสินค้า</h3>
+            </div>
+            <div class="relative">
+              <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <input type="search" id="product-search-input" placeholder="ค้นหาชื่อ หรือ รหัสสินค้า..." class="w-full rounded-lg border-slate-300 py-2 pl-10 pr-4 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 md:w-64" />
+            </div>
           </div>
-          <div class="relative">
-            <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-            <input type="search" id="product-search-input" placeholder="ค้นหาชื่อสินค้า, หมวดหมู่..." class="w-full rounded-lg border-slate-300 py-2 pl-10 pr-4 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 md:w-64" />
+          <div class="flex flex-col gap-4 md:flex-row md:items-end">
+            <div>
+              <label for="product-type-filter" class="block text-xs font-medium text-slate-600">ประเภท</label>
+              <select id="product-type-filter" class="mt-1 block w-full rounded-lg border-slate-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 md:w-auto">
+                <option value="">ทั้งหมด</option>
+                <option value="ชาย">ชาย</option>
+                <option value="หญิง">หญิง</option>
+              </select>
+            </div>
+            <div>
+              <label for="product-status-filter" class="block text-xs font-medium text-slate-600">สถานะ</label>
+              <select id="product-status-filter" class="mt-1 block w-full rounded-lg border-slate-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 md:w-auto">
+                <option value="">ทั้งหมด</option>
+                <option value="พร้อมขาย">พร้อมขาย</option>
+                <option value="หมดชั่วคราว">หมดชั่วคราว</option>
+              </select>
+            </div>
           </div>
-          <button
-            id="refresh-products"
-            class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800"
-          >
-            ข้อมูลอัปเดตอัตโนมัติ
-          </button>
         </div>
         <div class="mt-4 overflow-x-auto">
           <table class="min-w-full text-left text-sm text-slate-700">
             <thead class="text-xs font-semibold uppercase tracking-wide text-slate-600">
               <tr>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="id">รหัส</th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="name">ชื่อสินค้า</th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="category">หมวดหมู่</th>
-                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="stock">คงเหลือ</th>
-                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="price">ราคา</th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="status">สถานะ</th>
-                <th class="py-3 pr-4 text-right">จัดการ</th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="id">รหัส<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="name">ชื่อสินค้า<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="type">ประเภท<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="size">ขนาด<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right cursor-pointer" data-sort="stock">คงเหลือ<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right cursor-pointer" data-sort="price">ราคา<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="status">สถานะ<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right">จัดการ</th>
               </tr>
             </thead>
             <tbody
               id="products-table"
               class="divide-y divide-slate-200/50"
-              data-empty-colspan="7"
+              data-empty-colspan="8"
             >
               <tr>
-                <td colspan="7" class="py-8 text-center text-slate-400">
+                <td colspan="8" class="py-8 text-center text-slate-400">
                   โหลดข้อมูล...
                 </td>
               </tr>
             </tbody>
+            <tfoot class="bg-slate-100/80 border-t-2 border-slate-200">
+              <tr>
+                <th scope="row" colspan="4" class="px-4 py-3 text-right font-semibold text-slate-800">สรุปรายการที่แสดง:</th>
+                <td id="filtered-stock-count" class="px-4 py-3 text-right font-bold text-slate-800">0</td>
+                <td id="filtered-stock-value" class="px-4 py-3 text-right font-bold text-emerald-700">฿0</td>
+                <td colspan="2" class="px-4 py-3"></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </section>
@@ -127,18 +188,19 @@
 
     <template id="product-row">
       <tr class="transition-colors hover:bg-slate-50" style="animation: row-appear 0.5s ease-out forwards;">
-        <td class="py-4 pr-4 font-mono text-sm text-slate-500" data-field="id"></td>
-        <td class="py-4 pr-4 font-medium text-slate-800" data-field="name"></td>
-        <td class="py-4 pr-4 text-slate-600" data-field="category"></td>
-        <td class="py-4 pr-4 text-right font-semibold text-slate-700" data-field="stock"></td>
-        <td class="py-4 pr-4 text-right font-semibold text-emerald-600" data-field="price"></td>
-        <td class="py-4 pr-4">
+        <td class="px-4 py-3 font-mono text-xs text-slate-500 whitespace-nowrap" data-field="id"></td>
+        <td class="px-4 py-3 font-medium text-slate-800" data-field="name"></td>
+        <td class="px-4 py-3 text-slate-600" data-field="type"></td>
+        <td class="px-4 py-3 text-slate-600" data-field="size"></td>
+        <td class="px-4 py-3 text-right font-semibold text-slate-700" data-field="stock"></td>
+        <td class="px-4 py-3 text-right font-semibold text-emerald-600" data-field="price"></td>
+        <td class="px-4 py-3">
           <span
             data-field="status"
             class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
           ></span>
         </td>
-        <td class="py-4 text-right">
+        <td class="px-4 py-3 text-right">
           <button
             class="edit-product text-xs font-semibold text-indigo-600 hover:text-indigo-700"
           >
@@ -177,9 +239,19 @@
             id="product-form"
             class="space-y-6"
           >
-            <input type="hidden" name="id" />
             <fieldset class="grid gap-4">
               <legend class="sr-only">ข้อมูลสินค้า</legend>
+              <div>
+                <label for="product-id" class="block text-sm font-medium text-slate-700">รหัสสินค้า</label>
+                <input
+                  type="text"
+                  id="product-id"
+                  name="id"
+                  class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  placeholder="ตัวอย่าง: POLO-M-BLK"
+                  required
+                />
+              </div>
               <div>
                 <label for="product-name" class="block text-sm font-medium text-slate-700">ชื่อสินค้า</label>
                 <input
@@ -191,15 +263,26 @@
                   required
                 />
               </div>
+            </fieldset>
+            <fieldset class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <legend class="sr-only">ประเภทและขนาด</legend>
               <div>
-                <label for="product-category" class="block text-sm font-medium text-slate-700">หมวดหมู่</label>
-                <input
-                  type="text"
-                  id="product-category"
-                  name="category"
-                  class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  placeholder="corporate / event / school"
-                />
+                <label for="product-type" class="block text-sm font-medium text-slate-700">ประเภท</label>
+                <select id="product-type" name="type" class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select>
+              </div>
+              <div>
+                <label for="product-size" class="block text-sm font-medium text-slate-700">ขนาด</label>
+                <select id="product-size" name="size" class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                  <option>S</option>
+                  <option>M</option>
+                  <option>L</option>
+                  <option>XL</option>
+                  <option>2XL</option>
+                  <option>3XL</option>
+                </select>
               </div>
             </fieldset>
             <fieldset class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -223,7 +306,6 @@
                   min="0"
                   name="price"
                   class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  placeholder="199"
                 />
               </div>
             </fieldset>
@@ -237,7 +319,6 @@
                   class="mt-1 block w-full rounded-lg border-slate-300 bg-white text-base shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 >
                   <option value="พร้อมขาย">พร้อมขาย</option>
-                  <option value="รอผลิต">รอผลิต</option>
                   <option value="หมดชั่วคราว">หมดชั่วคราว</option>
                 </select>
               </div>
@@ -264,7 +345,7 @@
             <button
               type="submit"
               form="product-form"
-              class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               บันทึกสินค้า
             </button>
@@ -273,75 +354,71 @@
       </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-    <!-- App script -->
-    <script type="module" src="./js/app.js"></script>
-  </body>
-</html>
-              <input
-                type="number"
-                min="0"
-                name="stock"
-                class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-                placeholder="100"
-              />
-            </label>
-            <label class="text-sm font-medium text-slate-600">
-              ราคา (price)
-              <input
-                type="number"
-                min="0"
-                name="price"
-                class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-                placeholder="199"
-              />
-            </label>
-          </div>
-          <label class="text-sm font-medium text-slate-600">
-            สถานะ (status)
-            <select
-              name="status"
-              class="mt-1 w-full rounded-lg border-slate-200 text-base shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
-            >
-              <option value="พร้อมขาย">พร้อมขาย</option>
-              <option value="รอผลิต">รอผลิต</option>
-              <option value="หมดชั่วคราว">หมดชั่วคราว</option>
-            </select>
-          </label>
-          <div class="mt-2 flex items-center justify-between gap-2">
-            <button
-              type="button"
-              id="delete-product-button"
-              class="hidden rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-700"
-            >
-              ลบสินค้า
-            </button>
-            <div class="flex gap-2">
-            <button
-              type="button"
-              id="cancel-product-modal"
-              class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700"
-            >
-              ยกเลิก
-            </button>
-            <button
-              type="submit"
-              class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            >
-              บันทึกสินค้า
-            </button>
+    <!-- Confirmation Modal -->
+    <div
+      id="confirmation-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none"
+    >
+      <div
+        id="confirmation-modal-content"
+        class="flex flex-col max-w-md w-full rounded-2xl bg-white shadow-xl transition-all duration-300 ease-in-out scale-95 opacity-0"
+      >
+        <div class="p-6">
+          <div class="flex items-start">
+            <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
+              </svg>
+            </div>
+            <div class="ml-4 text-left">
+              <h3 class="text-lg font-semibold text-slate-900" id="confirmation-modal-title">ยืนยันการลบ</h3>
+              <div class="mt-2">
+                <p class="text-sm text-slate-500" id="confirmation-modal-message">คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+              </div>
             </div>
           </div>
-        </form>
+        </div>
+        <div class="bg-slate-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-3 rounded-b-2xl">
+          <button type="button" id="confirmation-cancel-button" class="w-full sm:w-auto rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">ยกเลิก</button>
+          <button type="button" id="confirmation-confirm-button" class="w-full sm:w-auto rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500">ยืนยันการลบ</button>
+        </div>
       </div>
     </div>
+
+    <!-- Notification Container -->
+    <div
+      id="notification-container"
+      class="fixed bottom-0 right-0 z-50 p-4 space-y-2 w-full max-w-sm"
+    ></div>
+
+    <!-- Notification Template -->
+    <template id="notification-template">
+      <div
+        class="flex items-start p-4 rounded-lg shadow-lg bg-white border-l-4 transition-all duration-300 transform translate-x-full opacity-0"
+        role="alert"
+      >
+        <div class="flex-shrink-0" data-icon-container>
+          <!-- Icon will be inserted here -->
+        </div>
+        <div class="ml-3 w-0 flex-1 pt-0.5">
+          <p class="text-sm font-medium text-slate-900" data-message>Notification Message</p>
+        </div>
+        <div class="ml-4 flex-shrink-0 flex">
+          <button type="button" class="inline-flex rounded-md bg-white text-slate-400 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" data-close-button>
+            <span class="sr-only">Close</span>
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </template>
 
     <!-- Firebase SDK -->
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
     <!-- App script -->
+    <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>

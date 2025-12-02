@@ -1,1 +1,0 @@
-// This directory is no longer in use. APIs are now in the /api directory for Vercel.
