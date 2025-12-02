@@ -37,8 +37,8 @@
         }
       }
     </style>
-  </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900">
+  </head> 
+  <body class="min-h-screen bg-slate-50 text-slate-900" data-role="admin user">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
       <div
         class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
@@ -55,13 +55,13 @@
         <nav class="flex gap-4">
           <a
             href="./dashboard.html"
-            data-role="admin"
+            data-role="admin user"
             class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >ภาพรวม</a
           >
           <a
             href="./products.html"
-            data-role="admin"
+            data-role="admin user"
             class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >สินค้า</a
           >
@@ -123,6 +123,50 @@
         </div>
       </section>
 
+      <!-- Stats Cards Section -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Total Orders Card -->
+          <div id="filter-card-all" data-status-filter="all" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-indigo-400 hover:shadow-md">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-slate-500">คำสั่งซื้อทั้งหมด</p>
+                  <p id="total-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
+              </div>
+          </div>
+          <!-- Paid Orders Card -->
+          <div id="filter-card-paid" data-status-filter="paid" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-emerald-400 hover:shadow-md">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 text-emerald-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-slate-500">ชำระแล้ว</p>
+                  <p id="paid-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
+              </div>
+          </div>
+          <!-- Pending Orders Card -->
+          <div id="filter-card-pending" data-status-filter="pending" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-yellow-400 hover:shadow-md">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 text-yellow-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-slate-500">รอดำเนินการ</p>
+                  <p id="pending-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
+              </div>
+          </div>
+          <!-- Cancelled Orders Card -->
+          <div id="filter-card-cancelled" data-status-filter="cancelled" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-rose-400 hover:shadow-md">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-rose-100 text-rose-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-slate-500">ยกเลิก</p>
+                  <p id="cancelled-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
+              </div>
+          </div>
+      </section>
+
       <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
         <div class="border-b border-slate-200 pb-4 space-y-4">
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -155,23 +199,25 @@
           <table class="min-w-full text-left text-sm text-slate-700">
             <thead class="text-xs font-semibold uppercase tracking-wide text-slate-600">
               <tr>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="id">รหัส<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="customerName">ลูกค้า<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="type-shirt">ประเภทเสื้อ<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="payment">ชำระเงิน<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="status">สถานะ<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="quantity">จำนวน<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="total">ยอดงวดนี้<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 text-right cursor-pointer" data-sort="fullTotal">ยอดเต็ม<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="date">วันที่<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 cursor-pointer" data-sort="paymentDate">วันที่ชำระล่าสุด<span class="sort-arrow"></span></th>
-                <th class="py-3 pr-4 text-right">จัดการ</th>
+                <th class="px-4 py-3 w-16 text-center">ลำดับ</th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="id">รหัส<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="customerName">ลูกค้า<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="productName">ชื่อสินค้า<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="productType">ประเภทเสื้อ<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="payment">ชำระเงิน<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="status">สถานะ<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right cursor-pointer" data-sort="quantity">จำนวน<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right cursor-pointer" data-sort="total">ยอดงวดนี้<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 text-right cursor-pointer" data-sort="fullTotal">ยอดเต็ม<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="date">วันที่<span class="sort-arrow"></span></th>
+                <th class="px-4 py-3 cursor-pointer" data-sort="paymentDate">วันที่ชำระล่าสุด<span class="sort-arrow"></span></th>
+                <th class="px-6 py-3 text-right" data-role="admin">จัดการ</th>
               </tr>
             </thead>
             <tbody
               id="orders-table"
               class="divide-y divide-slate-200/50"
-              data-empty-colspan="11"
+              data-empty-colspan="13"
             >
               <tr>
                 <td colspan="10" class="py-8 text-center text-slate-400">
@@ -186,22 +232,24 @@
 
     <template id="order-row">
       <tr class="transition-colors hover:bg-slate-50" style="animation: row-appear 0.5s ease-out forwards;">
-        <td class="py-4 pr-4 font-mono text-xs text-slate-500 whitespace-nowrap" data-field="id"></td>
-        <td class="py-4 pr-4 font-medium text-slate-800" data-field="name"></td>
-        <td class="py-4 pr-4 text-slate-600" data-field="type-shirt"></td>
-        <td class="py-4 pr-4 text-slate-600" data-field="payment"></td>
-        <td class="py-4 pr-4">
+        <td class="px-4 py-4 text-center font-medium text-slate-600" data-field="sequence"></td>
+        <td class="px-4 py-4 font-mono text-xs text-slate-500" data-field="id"></td>
+        <td class="px-4 py-4 font-medium text-slate-800" data-field="name"></td>
+        <td class="px-4 py-4 text-slate-600" data-field="productName"></td>
+        <td class="px-4 py-4 text-slate-600" data-field="type-shirt"></td>
+        <td class="px-4 py-4 text-slate-600" data-field="payment"></td>
+        <td class="px-4 py-4">
           <span
             data-field="status"
             class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
           ></span>
         </td>
-        <td class="py-4 pr-4 text-right font-semibold text-slate-800" data-field="quantity"></td>
-        <td class="py-4 pr-4 text-right font-semibold text-slate-800" data-field="total"></td>
-        <td class="py-4 pr-4 text-right font-bold text-emerald-700" data-field="fullTotal"></td>
-        <td class="py-4 pr-4 text-sm text-slate-500" data-field="date"></td>
-        <td class="py-4 pr-4 text-sm text-slate-500" data-field="paymentDate"></td>
-        <td class="py-4 text-right">
+        <td class="px-4 py-4 text-right font-semibold text-slate-800" data-field="quantity"></td>
+        <td class="px-4 py-4 text-right font-semibold text-slate-800" data-field="total"></td>
+        <td class="px-4 py-4 text-right font-bold text-emerald-700" data-field="fullTotal"></td>
+        <td class="px-4 py-4 text-sm text-slate-500" data-field="date"></td>
+        <td class="px-4 py-4 text-sm text-slate-500" data-field="paymentDate"></td>
+        <td class="px-6 py-4 text-right space-x-2" data-role="admin">
           <button
             class="edit-order text-xs font-semibold text-indigo-600 hover:text-indigo-700"
             >
@@ -242,10 +290,18 @@
                 <label for="order-name" class="block text-sm font-medium text-slate-700">ชื่อลูกค้า</label>
                 <input type="text" id="order-name" name="name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="นายสมชาย ใจดี" required />
               </div>
-              <div>
+              <div class="sm:col-span-2">
                 <label for="order-product-select" class="block text-sm font-medium text-slate-700">เลือกสินค้า</label>
                 <select id="order-product-select" name="productId" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                   <option value="">-- กำลังโหลดรายการสินค้า... --</option>
+                </select>
+              </div>
+              <div>
+                <label for="order-product-type" class="block text-sm font-medium text-slate-700">ประเภท</label>
+                <select id="order-product-type" name="productType" class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-100 text-slate-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required disabled>
+                  <option value="">-- เลือก --</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
                 </select>
               </div>
             </fieldset>
@@ -303,7 +359,7 @@
             <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label for="order-payment-date" class="block text-sm font-medium text-slate-700">วันที่ชำระเงิน</label>
-                <input type="date" id="order-payment-date" name="paymentDate" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                <input type="date" id="order-payment-date" name="paymentDate" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required />
               </div>
               <div>
                 <label for="order-date" class="block text-sm font-medium text-slate-700">วันที่บันทึก</label>
@@ -317,25 +373,69 @@
             type="button"
             id="delete-order-button"
             class="hidden rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-700"
-          >
+            data-i18n-key="orders_modal_delete_button">
             ลบคำสั่งซื้อ
           </button>
           <div class="flex flex-1 justify-end gap-2">
             <button
               type="button"
               id="cancel-order-modal"
-              class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700"
-            >
+              class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700" data-i18n-key="cancel">
               ยกเลิก
             </button>
             <button
               type="submit"
               form="order-form"
               class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+              data-i18n-key="save">
               บันทึก
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="order-details-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none">
+      <div id="order-details-modal-content" class="flex flex-col max-w-lg w-full rounded-2xl bg-white shadow-xl transition-all duration-300 ease-in-out scale-95 opacity-0">
+        <div class="flex items-center justify-between border-b border-slate-200 p-6">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-800">รายละเอียดคำสั่งซื้อ</h2>
+            <p id="details-order-number" class="text-sm font-mono text-slate-500"></p>
+          </div>
+          <button id="close-order-details-modal" type="button" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-200 hover:text-slate-800">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <div class="p-6 space-y-4 text-sm">
+          <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+            <div class="col-span-2">
+              <span class="font-medium text-slate-500">ลูกค้า:</span>
+              <span id="details-customer-name" class="block text-base font-semibold text-slate-800"></span>
+            </div>
+            <div>
+              <span class="font-medium text-slate-500">สินค้า:</span>
+              <span id="details-product-name" class="block font-medium text-slate-700"></span>
+            </div>
+            <div>
+              <span class="font-medium text-slate-500">ประเภท:</span>
+              <span id="details-product-type" class="block font-medium text-slate-700"></span>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-slate-200">
+            <div><span class="font-medium text-slate-500">จำนวน:</span><span id="details-quantity" class="block font-medium text-slate-700"></span></div>
+            <div><span class="font-medium text-slate-500">ยอดเต็ม:</span><span id="details-total-amount" class="block font-semibold text-emerald-700"></span></div>
+            <div><span class="font-medium text-slate-500">ยอดงวดนี้:</span><span id="details-installment-amount" class="block font-medium text-slate-700"></span></div>
+            <div class="col-span-3"><span class="font-medium text-slate-500">สถานะ:</span> <span id="details-status" class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold"></span></div>
+          </div>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-3 pt-4 border-t border-slate-200">
+            <div><span class="font-medium text-slate-500">วันที่สั่ง:</span><span id="details-order-date" class="block font-medium text-slate-700"></span></div>
+            <div><span class="font-medium text-slate-500">วันที่ชำระล่าสุด:</span><span id="details-payment-date" class="block font-medium text-slate-700"></span></div>
+            <div><span class="font-medium text-slate-500">วิธีชำระเงิน:</span><span id="details-payment-method" class="block font-medium text-slate-700"></span></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 rounded-b-2xl border-t border-slate-200 bg-slate-50 p-4">
+          <button type="button" id="details-edit-order-button" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500">แก้ไขคำสั่งซื้อ</button>
         </div>
       </div>
     </div>
@@ -369,8 +469,7 @@
       </div>
     </template>
 
-    <script type="module" src="./js/auth.js"></script>
-    <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/auth.js"></script>    
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const installmentsCountSelect = document.getElementById('order-installments-count');

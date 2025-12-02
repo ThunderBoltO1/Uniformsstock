@@ -3,175 +3,166 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Uniforms Stock | Dashboard</title>
+    <title>Uniforms Stock | ภาพรวม</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
-        font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
+        font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
-      @keyframes fade-in-up {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+      @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      .chart-container { position: relative; height: 300px; width: 100%; }
     </style>
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900">
+  <body class="min-h-screen bg-slate-50 text-slate-900" data-role="admin user">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
-      <div
-        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
-      >
+      <div class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4">
         <div>
-          <a
-            href="./index.html"
-            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
-          >
-            Uniforms Stock
-          </a>
-          <h1 class="text-2xl font-semibold">Dashboard</h1>
+          <a href="./index.html" class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900">Uniforms Stock</a>
+          <h1 class="text-2xl font-semibold">ภาพรวมระบบ</h1>
         </div>
         <nav class="flex gap-4">
-          <a
-            href="./dashboard.html"
-            data-role="admin"
-            class="border-b-2 border-indigo-600 px-2 py-2 text-sm font-semibold text-indigo-600"
-            >ภาพรวม</a
-          >
-          <a
-            href="./products.html"
-            data-role="admin"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-            >สินค้า</a
-          >
-          <a
-            data-role="admin user"
-            href="./orders.html"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-            >คำสั่งซื้อ</a
-          >
-           <a
-            href="./user-management.html"
-            data-role="admin"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-            >จัดการผู้ใช้</a
-          >
-          <a
-            href="./audit-log.html"
-            data-role="admin"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-            >ประวัติการแก้ไข</a
-          >
+          <a href="./dashboard.html" data-role="admin user" class="border-b-2 border-indigo-600 px-2 py-2 text-sm font-semibold text-indigo-600">ภาพรวม</a>
+          <a href="./products.html" data-role="admin user" class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700">สินค้า</a>
+          <a data-role="admin user" href="./orders.html" class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700">คำสั่งซื้อ</a>
+          <a href="./user-management.html" data-role="admin" class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700">จัดการผู้ใช้</a>
+          <a href="./audit-log.html" data-role="admin" class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700">ประวัติการแก้ไข</a>
           <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
             <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
-                <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
-                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+              <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture" />
+              <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
             </a>
-            <a
-              href="#"
-              title="ออกจากระบบ"
-              class="logout-button rounded-md p-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-              ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+            <a href="#" title="ออกจากระบบ" class="logout-button rounded-md p-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
             </a>
           </div>
         </nav>
       </div>
     </header>
 
-    <main class="px-6 py-8 space-y-8" style="animation: fade-in-up 0.7s ease-out forwards;">
+    <main id="dashboard-content" class="px-6 py-8 space-y-8" style="animation: fade-in-up 0.7s ease-out forwards;">
+      <!-- Header -->
       <section>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p class="text-sm font-medium uppercase tracking-wide text-slate-500">ภาพรวม</p>
-            <h2 class="text-3xl font-semibold text-slate-800">สรุปข้อมูลธุรกิจ</h2>
+        <h2 class="text-3xl font-bold text-slate-800">ยินดีต้อนรับ, <span class="user-display">...</span>!</h2>
+        <p class="mt-1 text-slate-500">นี่คือภาพรวมสรุปผลการดำเนินงานของร้านคุณ</p>
+      </section>
+
+      <!-- Low Stock Notification -->
+      <section id="low-stock-notification" class="hidden" style="animation: fade-in-up 0.5s ease-out 0.2s forwards; opacity: 0;">
+        <div class="rounded-xl border-l-4 border-amber-400 bg-amber-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-amber-800">
+                มีสินค้า <strong id="low-stock-alert-count">0</strong> รายการที่ใกล้หมดสต็อก
+                <a href="./products.html?filter=low_stock" class="ml-2 font-semibold underline hover:text-amber-900">ดูรายการสินค้า</a>
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Stats Cards -->
-      <section id="dashboard-stats" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Total Sales Card -->
-        <div class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <p class="text-sm font-medium text-slate-500">ยอดขายรวม (บาท)</p>
-          <p id="total-sales" class="mt-2 text-4xl font-bold text-emerald-600">0</p>
-          <p class="mt-1 text-xs text-slate-400">*นับจากสถานะ "ชำระเต็มจำนวน" และ "แบ่งชำระ"</p>
+      <!-- Stat Cards -->
+      <section id="dashboard-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- ยอดขายรวม -->
+        <div class="flex items-start p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-slate-500">ยอดขายรวม</p>
+            <p id="total-sales" class="text-2xl font-bold text-slate-800">฿0.00</p>
+          </div>
         </div>
-
-        <!-- Total Orders Card -->
-        <div class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <p class="text-sm font-medium text-slate-500">จำนวนคำสั่งซื้อทั้งหมด</p>
-          <p id="total-orders" class="mt-2 text-4xl font-bold text-indigo-600">0</p>
-          <p class="mt-1 text-xs text-slate-400">*ไม่นับรวมรายการที่ "ยกเลิก"</p>
+        <!-- คำสั่งซื้อทั้งหมด -->
+        <div class="flex items-start p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-slate-500">คำสั่งซื้อทั้งหมด</p>
+            <p id="total-orders" class="text-2xl font-bold text-slate-800">0</p>
+          </div>
         </div>
+        <!-- จำนวนลูกค้า -->
+        <div class="flex items-start p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-sky-100 text-sky-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-slate-500">จำนวนลูกค้า</p>
+            <p id="total-customers" class="text-2xl font-bold text-slate-800">0</p>
+          </div>
+        </div>
+        <!-- สินค้าใกล้หมด -->
+        <a href="./products.html?filter=low_stock" class="group block rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-200 hover:border-amber-400 hover:shadow-md">
+          <div class="flex items-start p-6">
+            <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-amber-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-slate-500">สินค้าใกล้หมด</p>
+              <p id="low-stock-items-count" class="text-2xl font-bold text-slate-800">0</p>
+            </div>
+          </div>
+        </a>
       </section>
 
-      <!-- Charts Grid -->
-      <section class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <!-- Charts Section -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Monthly Sales Chart -->
-        <div class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-800">สรุปยอดขายรายเดือน (12 เดือนล่าสุด)</h3>
-          <div class="mt-4 h-72">
-              <canvas id="monthly-sales-chart"></canvas>
+        <div class="lg:col-span-2 p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+          <h3 class="text-lg font-semibold text-slate-800">ยอดขายรายเดือน (12 เดือนล่าสุด)</h3>
+          <div class="chart-container mt-4" style="height: 350px;">
+            <canvas id="monthly-sales-chart"></canvas>
           </div>
         </div>
-        <!-- Payment Type Chart -->
-        <div class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-800">ยอดขายตามประเภทการชำระเงิน</h3>
-          <div class="mt-4 h-72 flex items-center justify-center"><canvas id="payment-type-chart"></canvas></div>
+
+        <!-- Doughnut Charts -->
+        <div class="space-y-8">
+            <!-- Product Type Sales Chart -->
+            <div class="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+              <h3 class="text-lg font-semibold text-slate-800">ยอดขายตามประเภทสินค้า</h3>
+              <div class="chart-container mt-4" style="height: 170px;">
+                <canvas id="product-type-chart"></canvas>
+              </div>
+            </div>
+            <!-- Payment Type Chart -->
+            <div class="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+              <h3 class="text-lg font-semibold text-slate-800">ยอดขายตามวิธีชำระเงิน</h3>
+              <div class="chart-container mt-4" style="height: 170px;">
+                <canvas id="payment-type-chart"></canvas>
+              </div>
+            </div>
         </div>
       </section>
 
-      <!-- Secondary Stats Grid -->
-      <section class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <!-- Lists Section -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Top Customers -->
-        <div class="lg:col-span-1 rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-800">5 อันดับลูกค้าชั้นนำ</h3>
-          <p class="text-xs text-slate-400">เรียงตามยอดสั่งซื้อรวม</p>
-          <div class="mt-4">
-              <ol id="top-customers-list" class="space-y-4">
-                <li class="py-4 text-center text-slate-400">กำลังโหลดข้อมูล...</li>
-              </ol>
-          </div>
-        </div>
-
-        <!-- Low Stock Products -->
-        <div class="lg:col-span-1 rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-800">5 อันดับสินค้าใกล้หมด</h3>
-          <p class="text-xs text-slate-400">สินค้าที่สต็อกน้อยกว่า 10 ชิ้น</p>
-          <div class="mt-4">
-              <ul id="low-stock-list" class="space-y-4">
-                <li class="py-4 text-center text-slate-400">กำลังโหลดข้อมูล...</li>
-              </ul>
-          </div>
+        <div class="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+          <h3 class="text-lg font-semibold text-slate-800">5 ลูกค้ายอดเยี่ยม</h3>
+          <ul id="top-customers-list" class="mt-4 space-y-4">
+            <li class="py-4 text-center text-slate-400">กำลังโหลดข้อมูล...</li>
+          </ul>
         </div>
 
         <!-- Recent Orders -->
-        <div class="lg:col-span-1 rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
+        <div class="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm">
           <h3 class="text-lg font-semibold text-slate-800">5 คำสั่งซื้อล่าสุด</h3>
-          <p class="text-xs text-slate-400">แสดงรายการล่าสุดจากในระบบ</p>
-          <div id="recent-orders-list" class="mt-4 space-y-4"></div>
+          <div id="recent-orders-list" class="mt-4 space-y-4">
+            <div class="py-4 text-center text-slate-400">กำลังโหลดข้อมูล...</div>
+          </div>
         </div>
       </section>
+
     </main>
 
-    <!-- Firebase SDK -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-    <!-- Chart.js for graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="./js/auth.js"></script>
-    <!-- App script -->
-    <script type="module" src="./js/app.js"></script>
   </body>
 </html>
