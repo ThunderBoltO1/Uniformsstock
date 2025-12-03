@@ -646,7 +646,7 @@ if (document.getElementById('products-table')) {
 
     const loadProducts = async () => {
       const productsSnapshot = await getDocs(collection(db, "products"));
-      allProducts = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      allProducts = productsSnapshot.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
       applyProductFilters(); // Use a central filter function
     };
 
@@ -696,7 +696,7 @@ if (document.getElementById('products-table')) {
       productForm.reset();
       productModalTitle.textContent = 'แก้ไขสินค้า';
       
-      productForm.id.value = product.id;
+      productForm.id.value = product.id; // This is the custom ID field from the document data
       productForm.id.readOnly = true; // Make ID readonly when editing
       productForm.name.value = product.name || '';
       productForm.type.value = product.type || 'ชาย';
