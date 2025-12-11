@@ -8,51 +8,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" 
       rel="stylesheet"
     />
     <style>
-      body {
-        font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-      }
-      @keyframes fade-in-up {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
+      @media print {
+        @page {
+          size: A5 portrait;
+          margin: 0;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        body.is-printing > :not(#receipt-container) {
+          display: none;
         }
-      }
-      @keyframes row-appear {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        body.is-printing #receipt-container {
+          display: block;
         }
       }
     </style>
   </head> 
-  <body class="min-h-screen bg-slate-50 text-slate-900" data-role="admin user">
+  <body class="min-h-screen bg-slate-50 text-slate-900 font-['Prompt']" data-role="admin user">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
-      <div
-        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
-      >
-        <div>
-          <a
-            href="./index.html"
-            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
-          >
-            Uniforms Stock
+      <div class="mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-4">
+        <div class="flex items-center gap-4">
+          <a href="./index.html" class="block w-32 flex-shrink-0">
+            <img src="https://img2.pic.in.th/pic/logo-full.png" alt="logo full" class="w-full h-auto">
           </a>
-          <h1 class="text-2xl font-semibold">จัดการคำสั่งซื้อ</h1>
+          <div>
+            <h1 class="text-2xl font-semibold">จัดการคำสั่งซื้อ</h1>
+          </div>
         </div>
-        <nav class="flex gap-4">
+        <nav class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 text-xs sm:text-sm">
           <a
             href="./dashboard.html"
             data-role="admin user"
@@ -86,7 +71,7 @@
           <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
             <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
                 <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
-                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+                <span class="hidden sm:inline">สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
             </a>
             <a
               href="#"
@@ -99,7 +84,7 @@
       </div>
     </header>
 
-    <main class="px-6 py-8 space-y-8" style="animation: fade-in-up 0.7s ease-out forwards;">
+    <main class="px-6 py-8 space-y-8">
       <section>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -124,7 +109,7 @@
       </section>
 
       <!-- Stats Cards Section -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           <!-- Total Orders Card -->
           <div id="filter-card-all" data-status-filter="all" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-indigo-400 hover:shadow-md">
               <div class="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600">
@@ -143,6 +128,19 @@
               <div class="ml-4">
                   <p class="text-sm font-medium text-slate-500">ชำระแล้ว</p>
                   <p id="paid-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
+              </div>
+          </div>
+          <!-- Split Orders Card -->
+          <div id="filter-card-split" data-status-filter="split" class="flex items-center p-6 bg-white rounded-xl border-2 border-transparent shadow-sm cursor-pointer transition-all duration-200 hover:border-blue-400 hover:shadow-md">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.55 5.55a8 8 0 10-10 10c3.87-.59 7.29-3.01 9-6.45.9-1.82.9-3.93 0-5.55z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.55 5.55L12 12" />
+                  </svg>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-slate-500">แบ่งชำระ</p>
+                  <p id="split-orders-count" class="text-2xl font-semibold text-slate-800">0</p>
               </div>
           </div>
           <!-- Pending Orders Card -->
@@ -227,11 +225,23 @@
             </tbody>
           </table>
         </div>
+        <!-- Pagination Controls -->
+        <div id="orders-pagination-controls" class="flex items-center justify-between border-t border-slate-200 pt-4 mt-4">
+          <div>
+            <p class="text-sm text-slate-600">
+              กำลังแสดง <span id="pagination-info" class="font-semibold">0 - 0 จาก 0</span> รายการ
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="prev-page-button" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">ก่อนหน้า</button>
+            <button id="next-page-button" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">ถัดไป</button>
+          </div>
+        </div>
       </section>
     </main>
 
     <template id="order-row">
-      <tr class="transition-colors hover:bg-slate-50" style="animation: row-appear 0.5s ease-out forwards;">
+      <tr class="transition-colors hover:bg-slate-50">
         <td class="px-4 py-4 text-center font-medium text-slate-600" data-field="sequence"></td>
         <td class="px-4 py-4 font-mono text-xs text-slate-500" data-field="id"></td>
         <td class="px-4 py-4 font-medium text-slate-800" data-field="name"></td>
@@ -249,7 +259,7 @@
         <td class="px-4 py-4 text-right font-bold text-emerald-700" data-field="fullTotal"></td>
         <td class="px-4 py-4 text-sm text-slate-500" data-field="date"></td>
         <td class="px-4 py-4 text-sm text-slate-500" data-field="paymentDate"></td>
-        <td class="px-6 py-4 text-right space-x-2" data-role="admin">
+        <td class="px-6 py-4 text-right" data-role="admin">
           <button
             class="edit-order text-xs font-semibold text-indigo-600 hover:text-indigo-700"
             >
@@ -284,38 +294,30 @@
         </div>
         <div class="flex-1 overflow-y-auto p-6">
           <form id="order-form" class="space-y-6">
-            <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <legend class="sr-only">ข้อมูลลูกค้าและสินค้า</legend>
-              <div>
-                <label for="order-name" class="block text-sm font-medium text-slate-700">ชื่อลูกค้า</label>
-                <input type="text" id="order-name" name="name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="นายสมชาย ใจดี" required />
+            <div>
+              <label for="order-name" class="block text-sm font-medium text-slate-700">ชื่อลูกค้า</label>
+              <input type="text" id="order-name" name="name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="นายสมชาย ใจดี" required />
+            </div>
+
+            <!-- Items Section -->
+            <fieldset>
+              <legend class="text-sm font-medium text-slate-700 mb-2">รายการสินค้า</legend>
+              <div id="order-items-container" class="space-y-4">
+                <!-- Item rows will be added here by JS -->
               </div>
-              <div class="sm:col-span-2">
-                <label for="order-product-select" class="block text-sm font-medium text-slate-700">เลือกสินค้า</label>
-                <select id="order-product-select" name="productId" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                  <option value="">-- กำลังโหลดรายการสินค้า... --</option>
-                </select>
-              </div>
-              <div>
-                <label for="order-product-type" class="block text-sm font-medium text-slate-700">ประเภท</label>
-                <select id="order-product-type" name="productType" class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-100 text-slate-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required disabled>
-                  <option value="">-- เลือก --</option>
-                  <option value="ชาย">ชาย</option>
-                  <option value="หญิง">หญิง</option>
-                </select>
-              </div>
+              <button type="button" id="add-order-item-button" class="mt-4 inline-flex items-center gap-2 rounded-lg border border-dashed border-slate-400 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-500 hover:text-slate-800">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                เพิ่มรายการสินค้า
+              </button>
             </fieldset>
 
+            <div class="pt-4 border-t border-slate-200">
+              <label for="order-total" class="block text-sm font-medium text-slate-700">ยอดรวมทั้งหมด (บาท)</label>
+              <input type="number" id="order-total" min="0" name="total" class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-100 text-slate-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="คำนวณอัตโนมัติ" readonly required />
+            </div>
+
             <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <legend class="sr-only">รายละเอียดคำสั่งซื้อ</legend>
-              <div>
-                <label for="order-quantity" class="block text-sm font-medium text-slate-700">จำนวน</label>
-                <input type="number" id="order-quantity" min="1" name="quantity" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="50" required />
-              </div>
-              <div>
-                <label for="order-total" class="block text-sm font-medium text-slate-700">ยอดรวม (บาท)</label>
-                <input type="number" id="order-total" min="0" name="total" class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-100 text-slate-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="คำนวณอัตโนมัติ" readonly required />
-              </div>
+              <legend class="sr-only">การชำระเงินและสถานะ</legend>
             </fieldset>
 
             <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -359,7 +361,8 @@
             <fieldset class="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label for="order-payment-date" class="block text-sm font-medium text-slate-700">วันที่ชำระเงิน</label>
-                <input type="date" id="order-payment-date" name="paymentDate" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required />
+                <input type="date" id="order-payment-date" name="paymentDate" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                <p id="payment-date-helper" class="mt-1 text-xs text-slate-500">เว้นว่างไว้หากยังไม่ชำระเงิน (ชำระภายหลัง)</p>
               </div>
               <div>
                 <label for="order-date" class="block text-sm font-medium text-slate-700">วันที่บันทึก</label>
@@ -394,6 +397,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Order Item Template -->
+    <template id="order-item-template">
+      <div class="order-item-row grid grid-cols-12 gap-x-3 gap-y-2 p-3 rounded-lg border border-slate-200 bg-white">
+        <div class="col-span-12 sm:col-span-6">
+          <label class="block text-xs font-medium text-slate-600">สินค้า</label>
+          <select name="productId" class="order-item-product mt-1 block w-full rounded-md border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+            <option value="">-- เลือกสินค้า --</option>
+          </select>
+        </div>
+        <div class="col-span-6 sm:col-span-2">
+          <label class="block text-xs font-medium text-slate-600">จำนวน</label>
+          <input type="number" name="quantity" min="1" value="1" class="order-item-quantity mt-1 block w-full rounded-md border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required />
+        </div>
+        <div class="col-span-6 sm:col-span-3">
+          <label class="block text-xs font-medium text-slate-600">ราคารวม</label>
+          <input type="text" name="itemTotal" class="order-item-total mt-1 block w-full rounded-md border-slate-200 bg-slate-100 text-sm text-slate-600 shadow-sm" readonly />
+        </div>
+        <div class="col-span-12 sm:col-span-1 flex items-end justify-end">
+          <button type="button" class="remove-order-item-button flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-red-50 hover:text-red-600">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          </button>
+        </div>
+      </div>
+    </template>
 
     <!-- Order Details Modal -->
     <div id="order-details-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none">
@@ -435,6 +463,17 @@
           </div>
         </div>
         <div class="flex items-center justify-end gap-2 rounded-b-2xl border-t border-slate-200 bg-slate-50 p-4">
+          <!-- เพิ่มปุ่มนี้เข้าไป -->
+          <button
+            type="button"
+            id="details-print-receipt-button"
+            class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+              <path fill-rule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.552c.377.046.74.14 1.085.278.346.137.67.33.961.568.29.239.545.52.75.829.204.31.357.65.451 1.007a4.48 4.48 0 01.06.688v7.22c0 .966-.784 1.75-1.75 1.75h-13A1.75 1.75 0 012 18.25v-7.22c0-.257.02-.51.06-.752.094-.356.247-.697.45-1.007.206-.309.46-.59.75-.829.291-.238.615-.43.962-.568.345-.138.708-.232 1.085-.278V2.75zM8.5 4.25a.75.75 0 00-1.5 0v.5h1.5v-.5zM6.75 6a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clip-rule="evenodd" />
+            </svg>
+            <span>พิมพ์ใบเสร็จ</span>
+          </button>
           <button type="button" id="details-edit-order-button" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500">แก้ไขคำสั่งซื้อ</button>
         </div>
       </div>
@@ -469,53 +508,103 @@
       </div>
     </template>
 
-    <script type="module" src="./js/auth.js"></script>    
+    <!-- Receipt Template (for printing) -->
+    <div id="receipt-container" class="hidden print:block bg-white">
+      <div id="receipt-content" class="p-8 font-['Prompt'] text-slate-800 max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center pb-4 border-b border-slate-300">
+          <div>
+            <h1 class="text-2xl font-bold text-indigo-600">โรงพยาบาลรามคำแหง2</h1>
+            <p class="text-[10px] text-slate-500">222 ถ.รามคำแหง แขวงราษฎร์พัฒนา เขตสะพานสูง กทม. 10240</p>
+          </div>
+          <div class="text-right">
+            <h2 class="text-2xl font-semibold">ใบเสร็จรับเงิน</h2>
+          </div>
+        </div>
+
+        <!-- Order Info -->
+        <div class="grid grid-cols-2 gap-x-8 mt-6 text-sm">
+          <div>
+            <p class="text-slate-500">ลูกค้า</p>
+            <p id="receipt-customer-name" class="font-semibold text-base"></p>
+            <div class="mt-2">
+              <p class="text-slate-500">ผู้รับเงิน</p>
+              <p id="receipt-staff-name" class="font-semibold"></p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-slate-500">เลขที่คำสั่งซื้อ: <span id="receipt-order-number" class="font-semibold text-slate-700"></span></p>
+            <p class="text-slate-500">วันที่: <span id="receipt-order-date" class="font-semibold text-slate-700"></span></p>
+            <p class="text-slate-500">เวลา: <span id="receipt-order-time" class="font-semibold text-slate-700"></span></p> <!-- เพิ่ม ID ที่นี่ -->
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="w-full text-sm mt-8">
+          <thead>
+            <tr class="border-b-2 border-slate-300 text-slate-500">
+              <th class="pb-2 text-left font-semibold">รายการ</th>
+              <th class="pb-2 w-24 text-right font-semibold">จำนวน</th>
+              <th class="pb-2 w-32 text-right font-semibold">ราคา/หน่วย</th>
+              <th class="pb-2 w-32 text-right font-semibold">ยอดรวม</th>
+            </tr>
+          </thead>
+          <tbody id="receipt-items-body">
+            <!-- Items will be inserted here by JS -->
+          </tbody>
+          <tfoot>
+            <tr id="receipt-total-row" class="hidden">
+              <td colspan="2"></td>
+              <td class="pt-4 text-right font-semibold">ยอดรวมทั้งสิ้น</td>
+              <td id="receipt-total-amount" class="pt-4 text-right font-semibold"></td>
+            </tr>
+            <tr class="font-bold text-lg">
+              <td colspan="2" id="receipt-payment-details" class="pt-4 text-left text-indigo-600"></td>
+              <td class="pt-4 text-right">ยอดชำระ</td>
+              <td id="receipt-installment-amount" class="pt-4 text-right"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Footer -->
+        <div class="mt-12 pt-4 border-t border-slate-300 text-center text-xs text-slate-500">
+          <p>ขอบคุณที่ใช้บริการ</p>
+          <p class="mt-1">พิมพ์เมื่อ: <span id="receipt-print-timestamp"></span></p>
+        </div>
+      </div>
+    </div>
+
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const installmentsCountSelect = document.getElementById('order-installments-count');
-        const installmentNumberSelect = document.getElementById('order-installment-number');
-        const splitPaymentFields = document.getElementById('split-payment-fields');
-        const statusSelect = document.getElementById('order-status');
+        const addButton = document.getElementById('add-order-item-button');
+        const container = document.getElementById('order-items-container');
 
-        function updateInstallmentNumberOptions() {
-            const count = parseInt(installmentsCountSelect.value, 10);
-            const currentVal = installmentNumberSelect.value;
+        if (addButton && container) {
+          let rowCountBeforeClick = 0;
 
-            installmentNumberSelect.innerHTML = ''; // Clear existing options
+          // ใช้ 'mousedown' เพื่อเก็บจำนวนแถวก่อนที่ event 'click' จะทำงาน
+          addButton.addEventListener('mousedown', () => {
+            rowCountBeforeClick = container.querySelectorAll('.order-item-row').length;
+          });
 
-            for (let i = 1; i <= count; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `งวดที่ ${i}`;
-                installmentNumberSelect.appendChild(option);
-            }
+          // ใช้ 'click' กับ setTimeout เพื่อตรวจสอบหลังจากที่สคริปต์เดิมเพิ่มแถวเข้ามาแล้ว
+          addButton.addEventListener('click', () => {
+            setTimeout(() => {
+              const rowsAdded = container.querySelectorAll('.order-item-row').length - rowCountBeforeClick;
 
-            // Restore previous selection if possible
-            if (currentVal && currentVal <= count) {
-                installmentNumberSelect.value = currentVal;
-            }
+              if (rowsAdded > 1) {
+                // ถ้ามีการเพิ่มเข้ามามากกว่า 1 แถว ให้ลบแถวที่เกินออก
+                const rowsToRemove = rowsAdded - 1;
+                for (let i = 0; i < rowsToRemove; i++) {
+                  // จำลองการคลิกปุ่มลบของแถวสุดท้าย เพื่อให้แน่ใจว่าราคารวมจะถูกคำนวณใหม่ด้วย
+                  container.querySelector('.order-item-row:last-child .remove-order-item-button')?.click();
+                }
+              }
+            }, 0); // setTimeout 0ms เพื่อให้โค้ดนี้ทำงานหลังจาก event loop ปัจจุบัน
+          });
         }
-
-        function toggleSplitPaymentFields() {
-            if (statusSelect.value === 'split') {
-                splitPaymentFields.classList.remove('hidden');
-                updateInstallmentNumberOptions();
-            } else {
-                splitPaymentFields.classList.add('hidden');
-            }
-        }
-
-        if (installmentsCountSelect && installmentNumberSelect && splitPaymentFields && statusSelect) {
-            // Initial setup
-            toggleSplitPaymentFields();
-            
-            // Event Listeners
-            statusSelect.addEventListener('change', toggleSplitPaymentFields);
-            installmentsCountSelect.addEventListener('change', updateInstallmentNumberOptions);
-        } else {
-            console.error('One or more required elements for split payment logic are missing.');
-        };
       });
     </script>
+    <script type="module" src="./js/auth.js"></script>
   </body>
 </html>

@@ -8,51 +8,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" 
       rel="stylesheet"
     />
-    <style>
-      body {
-        font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-      }
-      @keyframes fade-in-up {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      @keyframes row-appear {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900" data-role="admin">
+  <body class="min-h-screen bg-slate-50 text-slate-900 font-['Prompt']" data-role="admin">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
-      <div
-        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
-      >
-        <div>
-          <a
-            href="./index.html"
-            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
-          >
-            Uniforms Stock
+      <div class="mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-4">
+        <div class="flex items-center gap-4">
+          <a href="./index.html" class="block w-32 flex-shrink-0">
+            <img src="https://img2.pic.in.th/pic/logo-full.png" alt="logo full" class="w-full h-auto">
           </a>
-          <h1 class="text-2xl font-semibold">จัดการผู้ใช้</h1>
+          <div>
+            <h1 class="text-2xl font-semibold">จัดการผู้ใช้</h1>
+          </div>
         </div>
-        <nav class="flex gap-4">
+        <nav class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 text-xs sm:text-sm">
           <a
             href="./dashboard.html"
             data-role="admin user"
@@ -86,7 +57,7 @@
           <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
              <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
                 <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture" />
-                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+                <span class="hidden sm:inline">สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
             </a>
             <a
               href="#"
@@ -99,22 +70,16 @@
       </div>
     </header>
 
-    <main class="px-6 py-8 space-y-8" style="animation: fade-in-up 0.7s ease-out forwards;">
+    <main class="px-6 py-8 space-y-8">
         <section>
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <p class="text-sm font-medium uppercase tracking-wide text-slate-500">ภาพรวม</p>
                     <h2 class="text-3xl font-semibold text-slate-800">รายชื่อผู้ใช้ในระบบ</h2>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="refresh-users-button" class="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -ml-1"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.18-3.182m-3.181-4.991v4.99"></path></svg>
-                        รีเฟรช
-                    </button>
-                    <button id="open-user-modal" data-role="admin" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500">
-                        เพิ่มผู้ใช้ใหม่
-                    </button>
-                </div>
+                <button id="open-user-modal" data-role="admin" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500">
+                    เพิ่มผู้ใช้ใหม่
+                </button>
             </div>
         </section>
 
@@ -178,11 +143,23 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Pagination Controls -->
+            <div id="users-pagination-controls" class="flex items-center justify-between border-t border-slate-200 p-4">
+              <div>
+                <p class="text-sm text-slate-600">
+                  กำลังแสดง <span id="users-pagination-info" class="font-semibold">0 - 0</span>
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="users-prev-page-button" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">ก่อนหน้า</button>
+                <button id="users-next-page-button" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">ถัดไป</button>
+              </div>
+            </div>
         </section>
     </main>
 
     <template id="user-row-template">
-        <tr class="transition-colors hover:bg-slate-50" style="animation: row-appear 0.5s ease-out forwards;">
+        <tr class="transition-colors hover:bg-slate-50">
             <td class="px-6 py-3">
                 <div class="flex items-center gap-3">
                     <img data-field="profilePicture" class="h-10 w-10 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
@@ -220,6 +197,20 @@
         </div>
         <div class="flex-1 overflow-y-auto p-6">
           <form id="user-form" class="space-y-4">
+            <!-- Profile Picture Upload -->
+            <div class="flex flex-col items-center gap-4">
+              <img id="modal-profile-image-preview" class="h-24 w-24 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile preview">
+              <div>
+                <label for="modal-profile-picture-upload" class="cursor-pointer rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+                  <span>เปลี่ยนรูปภาพ</span>
+                  <input id="modal-profile-picture-upload" name="profilePicture" type="file" class="sr-only" accept="image/png, image/jpeg, image/webp">
+                </label>
+                <button type="button" id="modal-remove-picture-button" class="hidden ml-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-red-600 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-50">
+                  ลบรูป
+                </button>
+              </div>
+            </div>
+
             <div>
               <label for="username" class="block text-sm font-medium text-slate-700">ชื่อผู้ใช้ (Username)</label>
               <input type="text" name="username" id="username" required class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500" />
@@ -337,33 +328,5 @@
     </div>
 
     <script type="module" src="./js/auth.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const refreshButton = document.getElementById('refresh-users-button');
-        if (refreshButton) {
-          refreshButton.addEventListener('click', () => {
-            // ตรวจสอบว่ามีฟังก์ชันสำหรับโหลดผู้ใช้ใน auth.js หรือไม่
-            // โดยทั่วไปมักจะมีฟังก์ชันที่ทำหน้าที่นี้อยู่แล้ว
-            if (window.userManagement && typeof window.userManagement.loadAndDisplayUsers === 'function') {
-              
-              // แสดงสถานะกำลังโหลด
-              const originalText = refreshButton.innerHTML;
-              refreshButton.disabled = true;
-              refreshButton.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังรีเฟรช...`;
-
-              // เรียกฟังก์ชันเพื่อโหลดข้อมูลใหม่
-              window.userManagement.loadAndDisplayUsers().finally(() => {
-                // คืนค่าปุ่มเป็นปกติหลังโหลดเสร็จ
-                refreshButton.disabled = false;
-                refreshButton.innerHTML = originalText;
-              });
-            } else {
-              console.warn('ฟังก์ชัน loadAndDisplayUsers ไม่พร้อมใช้งาน');
-              alert('ไม่สามารถรีเฟรชข้อมูลได้ในขณะนี้');
-            }
-          });
-        }
-      });
-    </script>
   </body>
 </html>

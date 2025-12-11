@@ -8,75 +8,56 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" 
       rel="stylesheet"
     />
-    <style>
-      body {
-        font-family: "Prompt", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-      }
-      @keyframes fade-in-up {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900">
+  <body class="min-h-screen bg-slate-50 text-slate-900 font-['Prompt']" data-role="admin user">
     <header class="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40">
-      <div
-        class="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
-      >
-        <div>
-          <a
-            href="./index.html"
-            class="text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:text-slate-900"
-          >
-            Uniforms Stock
+      <div class="mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-4">
+        <div class="flex items-center gap-4">
+          <a href="./index.html" class="block w-32 flex-shrink-0">
+            <img src="https://img2.pic.in.th/pic/logo-full.png" alt="logo full" class="w-full h-auto"/>
           </a>
-          <h1 class="text-2xl font-semibold">หน้าหลัก</h1>
+          <div class="hidden">
+            <h1 class="text-2xl font-semibold">หน้าหลัก</h1>
+          </div>
         </div>
-        <nav class="flex gap-4">
+        <nav class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 text-xs sm:text-sm">
           <a
             href="./dashboard.html"
             data-role="admin user"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            class="hidden border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >ภาพรวม</a
           >
           <a
             href="./products.html"
             data-role="admin user"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            class="hidden border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >สินค้า</a
           >
           <a
             data-role="admin user"
             href="./orders.html"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            class="hidden border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >คำสั่งซื้อ</a
           >
            <a
             href="./user-management.html"
             data-role="admin"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            class="hidden border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >จัดการผู้ใช้</a
           >
           <a
             href="./audit-log.html"
             data-role="admin"
-            class="border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            class="hidden border-b-2 border-transparent px-2 py-2 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
             >ประวัติการแก้ไข</a
           >
-          <div class="flex items-center gap-2 border-l border-slate-200 pl-4">
+          <div class="hidden items-center gap-2 border-l border-slate-200 pl-4" data-role="admin user">
             <a href="./profile.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600">
                 <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover bg-slate-200" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' /%3E%3C/svg%3E" alt="Profile picture">
-                <span>สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
+                <span class="hidden sm:inline">สวัสดี, <span class="user-display font-semibold text-slate-800">...</span></span>
             </a>
             <a
               href="#"
@@ -91,13 +72,7 @@
     <div class="bg-slate-50">
       <div class="mx-auto px-6 py-24 sm:py-32">
         <div class="text-center">
-          <p class="text-base font-semibold leading-7 text-indigo-600">
-          Uniforms Stock
-          </p>
           <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">ระบบจัดการสต็อกและคำสั่งซื้อ</h1>
-          <p class="mt-6 text-lg leading-8 text-slate-600">
-            เลือกเมนูเพื่อจัดการสินค้าคงคลัง หรือติดตามคำสั่งซื้อจากลูกค้า
-          </p>
         </div>
       </div>
     </div>
@@ -105,8 +80,8 @@
       class="relative mx-auto grid gap-8 px-6 pb-16 -mt-20 sm:grid-cols-2 lg:grid-cols-3"
     >
       <a
-        href="./dashboard.html"
-        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-sky-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.1s forwards; opacity: 0;"
+        href="./dashboard.html" 
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-sky-400 hover:shadow-lg"
       >
         <div
           class="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-100 text-sky-600"
@@ -125,8 +100,8 @@
       </a>
 
       <a
-        href="./products.html"
-        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-indigo-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.2s forwards; opacity: 0;"
+        href="./products.html" 
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-indigo-400 hover:shadow-lg"
       >
         <div
           class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600"
@@ -145,8 +120,8 @@
       </a>
 
       <a
-        href="./orders.html"
-        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:shadow-lg" style="animation: fade-in-up 0.5s ease-out 0.3s forwards; opacity: 0;"
+        href="./orders.html" 
+        class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:shadow-lg"
       >
         <div
           class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600"
